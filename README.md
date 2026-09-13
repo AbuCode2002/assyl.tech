@@ -18,6 +18,10 @@ Docker для разработки **не нужен**: если `DATABASE_URL` 
 Первый вход в админку в dev-режиме: `admin@assyl.tech` / `admin12345`
 (или значения `ADMIN_EMAIL` / `ADMIN_PASSWORD` из `.env.local`). В production задайте свои.
 
+> `npm run dev` заметно медленнее (анимации и 3D могут подтормаживать). Чтобы оценить реальную скорость,
+> запускайте production-сборку: создайте `.env.local` с `AUTH_SECRET=<длинная случайная строка>`, затем
+> `npm run build` и `npm start`.
+
 ## Где что менять
 
 | Что | Файл |
