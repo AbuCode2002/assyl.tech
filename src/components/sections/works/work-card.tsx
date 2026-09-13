@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState, type CSSProperties, type PointerEvent } from "react";
+import { useEffect, useRef, useState, type PointerEvent } from "react";
 import { useTranslations } from "next-intl";
 import { ArrowIcon } from "@/components/ui/magnetic-button";
 import { HudCorners } from "@/components/ui/hud";
@@ -12,6 +12,9 @@ import { ScrambleOverlay } from "../_shared/scramble-overlay";
 import { BrowserFrame, PhoneFrame, StageBackdrop } from "./device-frame";
 import type { WorkItem } from "./types";
 import { pauseVideo, playExclusive } from "./video-control";
+
+/** Lenis flags the root element while a (smooth or native) scroll is in progress. */
+const isPageScrolling = () => document.documentElement.classList.contains("lenis-scrolling");
 
 type Props = {
   item: WorkItem;
@@ -62,12 +65,19 @@ export function WorkCard({ item, index, total, speed, className, onOpen }: Props
     video.addEventListener("pause", onPause);
 
     let io: IntersectionObserver | undefined;
+    let settle: ReturnType<typeof setTimeout> | undefined;
     const finePointer = window.matchMedia("(hover: hover) and (pointer: fine)").matches;
     if (!prefersReducedMotion()) {
       io = new IntersectionObserver(
         ([entry]) => {
           if (!entry) return;
-          if (entry.isIntersecting && !finePointer) playExclusive(video);
+          clearTimeout(settle);
+          // touch: start only once scrolling has stopped with the card in view, not while it flies past
+          const tryPlay = () => {
+            if (isPageScrolling()) settle = setTimeout(tryPlay, 300);
+            else playExclusive(video);
+          };
+          if (entry.isIntersecting && !finePointer) settle = setTimeout(tryPlay, 450);
           else if (!entry.isIntersecting) pauseVideo(video);
         },
         { threshold: finePointer ? 0 : 0.6 },
@@ -76,6 +86,7 @@ export function WorkCard({ item, index, total, speed, className, onOpen }: Props
     }
 
     return () => {
+      clearTimeout(settle);
       io?.disconnect();
       video.removeEventListener("playing", onPlaying);
       video.removeEventListener("pause", onPause);
@@ -97,36 +108,61 @@ export function WorkCard({ item, index, total, speed, className, onOpen }: Props
     }
   };
 
+  // Hover intent: a card sliding under a resting cursor while the page scrolls must not start
+  // loading/decoding video mid-scroll — wait for a short, scroll-free hover.
+  const intent = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const armPlay = () => {
+    if (intent.current || !videoRef.current || prefersReducedMotion()) return;
+    intent.current = setTimeout(() => {
+      intent.current = null;
+      if (!videoRef.current || !cardRef.current?.matches(":hover")) return;
+      if (isPageScrolling()) return armPlay();
+      playExclusive(videoRef.current);
+    }, 220);
+  };
+  useEffect(() => () => {
+    if (intent.current) clearTimeout(intent.current);
+  }, []);
+
   const onEnter = (e: PointerEvent) => {
     if (e.pointerType !== "mouse") return;
     placePill(e, true);
-    setScramble((n) => n + 1);
-    if (videoRef.current && !prefersReducedMotion()) playExclusive(videoRef.current);
+    if (!isPageScrolling()) setScramble((n) => n + 1);
+    armPlay();
   };
   const onMove = (e: PointerEvent) => {
-    if (e.pointerType === "mouse") placePill(e);
+    if (e.pointerType !== "mouse") return;
+    placePill(e);
+    if (!playing) armPlay();
   };
   const onLeave = (e: PointerEvent) => {
     if (e.pointerType !== "mouse") return;
+    if (intent.current) clearTimeout(intent.current);
+    intent.current = null;
     if (videoRef.current) pauseVideo(videoRef.current);
   };
 
   const mobile = item.platform === "mobile";
+  // The still is an <img decoding="async"> instead of the video `poster` attribute: posters are decoded
+  // synchronously at first paint, which dropped frames exactly as each card scrolled in.
   const video = (
-    <video
-      ref={videoRef}
-      className="absolute inset-0 size-full object-cover"
-      poster={item.poster}
-      muted
-      loop
-      playsInline
-      preload="none"
-      disablePictureInPicture
-      aria-hidden
-      tabIndex={-1}
-    >
-      <source src={item.video} type="video/mp4" />
-    </video>
+    <>
+      {/* eslint-disable-next-line @next/next/no-img-element */}
+      <img src={item.poster} alt="" aria-hidden decoding="async" loading="lazy" className="absolute inset-0 size-full object-cover" />
+      <video
+        ref={videoRef}
+        className={cn("absolute inset-0 size-full object-cover transition-opacity duration-300", playing ? "opacity-100" : "opacity-0")}
+        muted
+        loop
+        playsInline
+        preload="none"
+        disablePictureInPicture
+        aria-hidden
+        tabIndex={-1}
+      >
+        <source src={item.video} type="video/mp4" />
+      </video>
+    </>
   );
 
   return (
@@ -145,16 +181,15 @@ export function WorkCard({ item, index, total, speed, className, onOpen }: Props
         <div
           ref={stageRef}
           data-stage
-          style={{ "--accent": item.accent } as CSSProperties}
           className={cn(
             "relative isolate overflow-hidden rounded-2xl border border-line bg-carbon transition-colors duration-700 group-hover/work:border-line-strong",
             mobile ? "aspect-[4/5]" : "aspect-[4/3.4] sm:aspect-[16/11]",
           )}
         >
-          <StageBackdrop />
+          <StageBackdrop accent={item.accent} />
           <div
             data-media
-            className="absolute inset-0 flex items-center justify-center transition-transform duration-[1400ms] ease-out-expo will-change-transform group-hover/work:scale-[1.035]"
+            className="absolute inset-0 flex items-center justify-center transition-transform duration-[1400ms] ease-out-expo group-hover/work:-translate-y-2"
           >
             {mobile ? (
               <PhoneFrame className="h-[80%]">{video}</PhoneFrame>
@@ -164,6 +199,15 @@ export function WorkCard({ item, index, total, speed, className, onOpen }: Props
               </BrowserFrame>
             )}
           </div>
+
+          {/* reveal curtain (scaled away by WorksIndex; stays collapsed if JS/motion is off) */}
+          <span
+            aria-hidden
+            data-curtain
+            className="pointer-events-none absolute inset-0 z-10 origin-top bg-carbon"
+            // inline transform (not Tailwind's `scale` property) so GSAP's scaleY can override it
+            style={{ transform: "scaleY(0)" }}
+          />
 
           {/* scanning hairline */}
           <span

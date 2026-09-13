@@ -10,25 +10,20 @@ export const PHONE = { w: 0.76, h: 1.64, d: 0.086, radius: 0.118, screenW: 0.7, 
 export function Phone({ screen, ref }: { screen: THREE.ShaderMaterial; ref?: Ref<THREE.Group> }) {
   const parts = useMemo(() => {
     const body = roundedSlab(PHONE.w, PHONE.h, PHONE.d, PHONE.radius, 0.016);
-    const glass = new THREE.ShapeGeometry(roundedRectShape(PHONE.w - 0.028, PHONE.h - 0.028, PHONE.radius - 0.012), 24);
+    const glass = new THREE.ShapeGeometry(roundedRectShape(PHONE.w - 0.028, PHONE.h - 0.028, PHONE.radius - 0.012), 12);
     const screenGeo = new THREE.PlaneGeometry(PHONE.screenW, PHONE.screenH);
     const bump = roundedSlab(0.33, 0.33, 0.026, 0.085, 0.008);
-    const lens = new THREE.CylinderGeometry(0.052, 0.056, 0.03, 40);
-    const lensGlass = new THREE.CircleGeometry(0.036, 32);
+    const lens = new THREE.CylinderGeometry(0.052, 0.056, 0.03, 24);
+    const lensGlass = new THREE.CircleGeometry(0.036, 20);
     const button = roundedSlab(0.012, 0.16, 0.03, 0.005, 0.003);
     const logo = new THREE.CircleGeometry(0.05, 32);
 
-    const frameMat = new THREE.MeshPhysicalMaterial({
-      color: "#2a2e37",
-      metalness: 1,
-      roughness: 0.26,
-      clearcoat: 0.8,
-      clearcoatRoughness: 0.18,
-    });
-    const glassMat = new THREE.MeshPhysicalMaterial({ color: "#020203", metalness: 0.1, roughness: 0.04, clearcoat: 1 });
-    const backMat = new THREE.MeshPhysicalMaterial({ color: "#1b1e25", metalness: 0.55, roughness: 0.42, clearcoat: 0.4 });
-    const lensMat = new THREE.MeshPhysicalMaterial({ color: "#0c0e13", metalness: 0.9, roughness: 0.2 });
-    const lensGlassMat = new THREE.MeshPhysicalMaterial({ color: "#0a1633", metalness: 0.4, roughness: 0.02, clearcoat: 1, emissive: "#0b1a44", emissiveIntensity: 0.6 });
+    // MeshStandardMaterial only: clearcoat/physical shading costs too much on integrated GPUs
+    const frameMat = new THREE.MeshStandardMaterial({ color: "#2e323c", metalness: 1, roughness: 0.24 });
+    const glassMat = new THREE.MeshStandardMaterial({ color: "#020203", metalness: 0.2, roughness: 0.05 });
+    const backMat = new THREE.MeshStandardMaterial({ color: "#1b1e25", metalness: 0.6, roughness: 0.38 });
+    const lensMat = new THREE.MeshStandardMaterial({ color: "#0c0e13", metalness: 0.9, roughness: 0.2 });
+    const lensGlassMat = new THREE.MeshStandardMaterial({ color: "#0a1633", metalness: 0.4, roughness: 0.04, emissive: "#0b1a44", emissiveIntensity: 0.6 });
     const logoMat = new THREE.MeshBasicMaterial({ color: "#3b7bff", transparent: true, opacity: 0.8 });
     return { body, glass, screenGeo, bump, lens, lensGlass, button, logo, frameMat, glassMat, backMat, lensMat, lensGlassMat, logoMat };
   }, []);

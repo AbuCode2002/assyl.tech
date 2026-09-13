@@ -90,8 +90,8 @@ export function Hero() {
     >
       {/* atmosphere */}
       <div aria-hidden className="pointer-events-none absolute inset-0">
-        <div className="absolute -right-[20%] top-[10%] h-[80vh] w-[80vh] rounded-full bg-signal/20 blur-[140px] max-md:left-1/2 max-md:top-0 max-md:-translate-x-1/2" />
-        <div className="absolute bottom-[-30%] left-[10%] h-[60vh] w-[70vw] rounded-full bg-signal-2/10 blur-[160px]" />
+        {/* soft glows as gradients — a CSS blur() of this size is expensive to rasterise */}
+        <div className="absolute inset-0 [background:radial-gradient(ellipse_45%_55%_at_78%_40%,rgb(59_123_255/0.2),transparent_70%),radial-gradient(ellipse_50%_35%_at_30%_105%,rgb(90_92_255/0.12),transparent_70%)] max-md:[background:radial-gradient(ellipse_80%_45%_at_50%_25%,rgb(59_123_255/0.22),transparent_70%)]" />
         <div
           className="absolute inset-0 opacity-[0.35]"
           style={{

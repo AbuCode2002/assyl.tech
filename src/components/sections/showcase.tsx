@@ -11,6 +11,7 @@ import { projects } from "@/content/projects";
 import type { Locale } from "@/i18n/routing";
 import { cn } from "@/lib/cn";
 import { ScrollTrigger, useGSAP } from "@/lib/gsap";
+import { onIntroDone } from "@/lib/intro";
 
 const ShowcaseScene = dynamic(() => import("@/components/three/showcase-scene"), { ssr: false });
 
@@ -41,11 +42,23 @@ export function Showcase() {
       setWebgl(false);
     }
     const el = root.current!;
-    const nearIo = new IntersectionObserver(([e]) => e?.isIntersecting && setNear(true), { rootMargin: "150% 0px" });
+    // Mount the 3D scene while the browser is idle after the intro — never mid-scroll — so shader
+    // compilation and texture uploads don't cause a freeze when the section arrives.
+    let idleId = 0;
+    const hasIdle = typeof window.requestIdleCallback === "function";
+    const idle = (cb: () => void) => {
+      idleId = hasIdle ? window.requestIdleCallback(cb, { timeout: 2500 }) : window.setTimeout(cb, 1200);
+    };
+    const offIntro = onIntroDone(() => idle(() => setNear(true)));
+    // …or immediately if the visitor gets close before that happens
+    const nearIo = new IntersectionObserver(([e]) => e?.isIntersecting && setNear(true), { rootMargin: "200% 0px" });
     const viewIo = new IntersectionObserver(([e]) => setInView(!!e?.isIntersecting), { rootMargin: "10% 0px" });
     nearIo.observe(el);
     viewIo.observe(el);
     return () => {
+      offIntro();
+      if (hasIdle) window.cancelIdleCallback(idleId);
+      else clearTimeout(idleId);
       nearIo.disconnect();
       viewIo.disconnect();
     };
@@ -93,10 +106,16 @@ export function Showcase() {
       <div className="sticky top-0 h-[100svh] overflow-hidden">
         {/* glow backdrop */}
         <div aria-hidden className="pointer-events-none absolute inset-0">
-          <div
-            className="absolute left-[60%] top-1/2 h-[70vh] w-[70vh] -translate-x-1/2 -translate-y-1/2 rounded-full blur-[130px] transition-colors duration-1000 max-md:left-1/2 max-md:top-[38%]"
-            style={{ backgroundColor: `${current.accent}2e` }}
-          />
+          {items.map((item, i) => (
+            <div
+              key={item.id}
+              className="absolute inset-0 transition-opacity duration-1000"
+              style={{
+                opacity: i === chapter ? 1 : 0,
+                background: `radial-gradient(ellipse 38% 50% at 62% 50%, ${item.accent}33, transparent 70%)`,
+              }}
+            />
+          ))}
         </div>
 
         {/* 3D */}
@@ -143,14 +162,15 @@ export function Showcase() {
                 <span className="h-px w-8 bg-line-strong" />
                 <span>{current.category[locale]}</span>
               </div>
-              <div className="relative min-h-[178px] md:min-h-[260px]">
+              {/* tall enough for two-line titles ("Farabi AI · Сводка") + summary + stack chips */}
+              <div className="relative min-h-[190px] md:min-h-[330px]">
                 {items.map((item, i) => (
                   <div
                     key={item.id}
                     aria-hidden={i !== chapter}
                     className={cn(
-                      "absolute inset-x-0 bottom-0 transition-[opacity,transform,filter] duration-700 ease-out-expo",
-                      i === chapter ? "translate-y-0 opacity-100 blur-0" : i < chapter ? "-translate-y-6 opacity-0 blur-sm" : "translate-y-6 opacity-0 blur-sm",
+                      "absolute inset-x-0 bottom-0 transition-[opacity,transform] duration-700 ease-out-expo",
+                      i === chapter ? "translate-y-0 opacity-100" : i < chapter ? "-translate-y-6 opacity-0" : "translate-y-6 opacity-0",
                     )}
                   >
                     <h3 className="font-display text-[clamp(34px,4.4vw,68px)] font-medium leading-[0.95] tracking-[-0.035em]">

@@ -34,7 +34,7 @@ const floorFragment = /* glsl */ `
   varying vec2 vUv;
   float line(float x, float w){ float d = abs(fract(x) - 0.5); return smoothstep(w, 0.0, 0.5 - d); }
   void main(){
-    vec2 p = (vUv - 0.5) * 40.0;
+    vec2 p = (vUv - 0.5) * 27.0;
     float g = max(line(p.x, 0.02), line(p.y + uTime * 0.25, 0.02));
     float r = length(vUv - 0.5) * 2.0;
     float fade = smoothstep(0.55, 0.0, r);
@@ -63,7 +63,7 @@ function Floor({ progress }: { progress: RefObject<number> }) {
   });
   return (
     <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, -1.72, 0]} material={mat}>
-      <planeGeometry args={[24, 24]} />
+      <planeGeometry args={[16, 16]} />
     </mesh>
   );
 }
@@ -91,7 +91,7 @@ function Rings() {
 }
 
 function Stage({ progress, active }: { progress: RefObject<number>; active: boolean }) {
-  const { size, camera } = useThree();
+  const { size, camera, gl, scene } = useThree();
   const rig = useRef<THREE.Group>(null);
   const phone = useRef<THREE.Group>(null);
   const laptop = useRef<THREE.Group>(null);
@@ -109,10 +109,19 @@ function Stage({ progress, active }: { progress: RefObject<number>; active: bool
     [phoneScreen, laptopScreen],
   );
 
+  // Network + decoder warm-up is staggered: phone clips when the section is on screen,
+  // laptop clips only once the story gets close to the laptop chapter.
+  const [laptopNear, setLaptopNear] = useState(false);
   const sStore = useScreenSource(CLIPS.storeplan.video, CLIPS.storeplan.poster, active);
   const sKrovla = useScreenSource(CLIPS.krovla.video, CLIPS.krovla.poster, active);
-  const sDash = useScreenSource(CLIPS.dashboard.video, CLIPS.dashboard.poster, active);
-  const sChat = useScreenSource(CLIPS.assistant.video, CLIPS.assistant.poster, active);
+  const sDash = useScreenSource(CLIPS.dashboard.video, CLIPS.dashboard.poster, active && laptopNear);
+  const sChat = useScreenSource(CLIPS.assistant.video, CLIPS.assistant.poster, active && laptopNear);
+
+  // Compile every shader up front (including the still-hidden laptop) so nothing compiles mid-scroll.
+  useEffect(() => {
+    if (laptop.current) laptop.current.visible = true;
+    gl.compile(scene, camera);
+  }, [gl, scene, camera]);
 
   useEffect(() => {
     phoneScreen.uniforms.uTexA!.value = sStore.texture;
@@ -146,10 +155,12 @@ function Stage({ progress, active }: { progress: RefObject<number>; active: bool
     laptopScreen.uniforms.uTime!.value = t;
 
     if (active) {
-      setPlaying("store", sStore.video, p < 0.44);
-      setPlaying("krovla", sKrovla.video, p > 0.3 && p < 0.72);
-      setPlaying("dash", sDash.video, p > 0.6 && p < 0.95);
-      setPlaying("chat", sChat.video, p > 0.84);
+      // at most two decoders run at once, and only around a hand-over
+      setPlaying("store", sStore.video, p < 0.37);
+      setPlaying("krovla", sKrovla.video, p > 0.35 && p < 0.7);
+      setPlaying("dash", sDash.video, p > 0.64 && p < 0.93);
+      setPlaying("chat", sChat.video, p > 0.85);
+      if (!laptopNear && p > 0.38) setLaptopNear(true);
     }
 
     // responsive framing: one scale while the phone is the hero, another for the laptop composition
@@ -210,8 +221,8 @@ function Stage({ progress, active }: { progress: RefObject<number>; active: bool
       const swap = easeInOut(seg(p, 0.86, 0.92));
       const push = easeInOut(seg(p, 0.77, 1));
 
-      laptop.current.visible = p > 0.5;
-      laptop.current.position.set(lerp(0.6, 0.35, push), lerp(-5, -1.18, rise) + Math.sin(t * 0.9) * 0.02 * rise, lerp(-1.2, -0.2, rise) + push * 0.35);
+      laptop.current.visible = p > 0.52;
+      laptop.current.position.set(lerp(0.6, 0.35, push), lerp(-5, -0.98, rise) + Math.sin(t * 0.9) * 0.02 * rise, lerp(-1.2, -0.2, rise) + push * 0.35);
       laptop.current.rotation.set(lerp(0.55, 0.22, rise), lerp(-0.9, -0.28, rise) + push * 0.12, 0);
       laptop.current.scale.setScalar(1.02);
       lid.current.rotation.x = lerp(Math.PI / 2, -0.26, open);
@@ -233,12 +244,13 @@ function Stage({ progress, active }: { progress: RefObject<number>; active: bool
 }
 
 export default function ShowcaseScene({ progress, active }: { progress: RefObject<number>; active: boolean }) {
-  const [dpr, setDpr] = useState(1.5);
+  const [dpr, setDpr] = useState(() => Math.min(1.25, typeof window === "undefined" ? 1 : window.devicePixelRatio));
   return (
     <Canvas
-      frameloop={active ? "always" : "never"}
+      // off-screen: render only on demand (first frame compiles shaders and uploads posters ahead of time)
+      frameloop={active ? "always" : "demand"}
       dpr={dpr}
-      gl={{ antialias: true, alpha: true, powerPreference: "high-performance" }}
+      gl={{ antialias: false, alpha: true, powerPreference: "high-performance", stencil: false }}
       camera={{ position: [0, 0.35, 9], fov: 30, near: 0.1, far: 80 }}
       style={{ position: "absolute", inset: 0 }}
       onCreated={({ gl }) => {
@@ -246,14 +258,13 @@ export default function ShowcaseScene({ progress, active }: { progress: RefObjec
         gl.toneMappingExposure = 1.05;
       }}
     >
-      <PerformanceMonitor onIncline={() => setDpr(Math.min(1.75, window.devicePixelRatio))} onDecline={() => setDpr(1)} flipflops={3} onFallback={() => setDpr(0.85)} />
-      <ambientLight intensity={0.35} />
-      <directionalLight position={[3, 5, 5]} intensity={1.6} />
+      <PerformanceMonitor onIncline={() => setDpr(Math.min(1.5, window.devicePixelRatio))} onDecline={() => setDpr(1)} flipflops={3} onFallback={() => setDpr(0.85)} />
+      <ambientLight intensity={0.45} />
+      <directionalLight position={[3, 5, 5]} intensity={1.8} />
       <pointLight position={[-4, 1.5, -2.5]} color="#3b7bff" intensity={60} distance={18} />
       <pointLight position={[4.5, -0.5, -2]} color="#9b6bff" intensity={35} distance={18} />
-      <pointLight position={[0, 3, 4]} color="#cfe0ff" intensity={12} distance={14} />
 
-      <Environment resolution={256} frames={1}>
+      <Environment resolution={128} frames={1}>
         <Lightformer form="rect" intensity={2.2} position={[0, 4, 5]} scale={[10, 2, 1]} />
         <Lightformer form="rect" intensity={5} color="#3b7bff" position={[-6, 0.5, -1]} rotation-y={Math.PI / 2} scale={[8, 5, 1]} />
         <Lightformer form="rect" intensity={3} color="#9b6bff" position={[6, -0.5, -1]} rotation-y={-Math.PI / 2} scale={[8, 5, 1]} />
@@ -263,7 +274,7 @@ export default function ShowcaseScene({ progress, active }: { progress: RefObjec
 
       <Stage progress={progress} active={active} />
       <Floor progress={progress} />
-      <Sparkles count={70} scale={[12, 5, 6]} size={2.2} speed={0.25} opacity={0.55} color="#7fa2ff" />
+      <Sparkles count={36} scale={[12, 5, 6]} size={2.4} speed={0.25} opacity={0.55} color="#7fa2ff" />
     </Canvas>
   );
 }

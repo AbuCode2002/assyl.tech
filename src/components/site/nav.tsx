@@ -164,7 +164,7 @@ export function Nav() {
       {/* mobile menu */}
       <div
         className={cn(
-          "fixed inset-0 z-40 bg-void/95 backdrop-blur-xl transition-[clip-path] duration-[900ms] ease-in-out-expo lg:hidden",
+          "fixed inset-0 z-40 bg-void/[0.98] transition-[clip-path] duration-[900ms] ease-in-out-expo lg:hidden",
           open ? "[clip-path:inset(0_0_0_0)]" : "pointer-events-none [clip-path:inset(0_0_100%_0)]",
         )}
         aria-hidden={!open}

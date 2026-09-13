@@ -22,14 +22,19 @@ export function Cursor() {
       raf = 0,
       visible = false;
 
+    // the loop sleeps once the ring has caught up, and wakes on the next pointer event
     const loop = () => {
       x += (tx - x) * 0.18;
       y += (ty - y) * 0.18;
       scale += (targetScale - scale) * 0.15;
       el.style.transform = `translate3d(${x}px, ${y}px, 0) translate(-50%, -50%) scale(${scale})`;
-      raf = requestAnimationFrame(loop);
+      raf = Math.abs(tx - x) + Math.abs(ty - y) + Math.abs(targetScale - scale) > 0.05 ? requestAnimationFrame(loop) : 0;
+    };
+    const wake = () => {
+      if (!raf) raf = requestAnimationFrame(loop);
     };
     const onMove = (e: PointerEvent) => {
+      wake();
       tx = e.clientX;
       ty = e.clientY;
       if (!visible) {
@@ -56,10 +61,15 @@ export function Cursor() {
       visible = false;
       el.style.opacity = "0";
     };
-    const onDown = () => (targetScale *= 0.8);
-    const onUp = () => (targetScale /= 0.8);
+    const onDown = () => {
+      targetScale *= 0.8;
+      wake();
+    };
+    const onUp = () => {
+      targetScale /= 0.8;
+      wake();
+    };
 
-    raf = requestAnimationFrame(loop);
     window.addEventListener("pointermove", onMove, { passive: true });
     document.documentElement.addEventListener("pointerleave", onLeave);
     window.addEventListener("pointerdown", onDown);

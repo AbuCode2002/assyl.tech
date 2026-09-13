@@ -2,7 +2,7 @@
 
 import { useRef, type ReactNode, type Ref } from "react";
 import { cn } from "@/lib/cn";
-import { gsap, prefersReducedMotion, useGSAP } from "@/lib/gsap";
+import { gsap, prefersReducedMotion, ScrollTrigger, useGSAP } from "@/lib/gsap";
 
 export type TextTag = "p" | "span" | "div" | "h1" | "h2" | "h3" | "h4";
 export type TextElementProps = {
@@ -39,16 +39,22 @@ export function RevealText({ text, as: Tag = "p", className, by = "words", stagg
       if (!ref.current || prefersReducedMotion()) return;
       const pieces = ref.current.querySelectorAll<HTMLElement>("[data-piece]");
       if (mode === "scrub") {
-        gsap.fromTo(
-          pieces,
-          { opacity: 0.12 },
-          {
-            opacity: 1,
-            ease: "none",
-            stagger: 0.05,
-            scrollTrigger: { trigger: ref.current, start: "top 85%", end: "bottom 45%", scrub: true },
+        // Discrete: light up whole words as the threshold passes them (CSS transition does the fade).
+        // Scrubbing opacity of every word each frame repainted the whole paragraph 60×/s.
+        let lit = -1;
+        ScrollTrigger.create({
+          trigger: ref.current,
+          start: "top 85%",
+          end: "bottom 45%",
+          onUpdate: (self) => {
+            const next = Math.round(self.progress * pieces.length);
+            if (next === lit) return;
+            const from = Math.min(lit, next);
+            const to = Math.max(lit, next);
+            for (let i = Math.max(0, from); i < to && i < pieces.length; i++) pieces[i]!.dataset.lit = i < next ? "1" : "0";
+            lit = next;
           },
-        );
+        });
         return;
       }
       gsap.fromTo(
@@ -79,12 +85,17 @@ export function RevealText({ text, as: Tag = "p", className, by = "words", stagg
         ) : tok === "\n" ? (
           <br key={i} />
         ) : mode === "scrub" ? (
-          <span key={i} data-piece aria-hidden className="inline-block">
+          <span
+            key={i}
+            data-piece
+            aria-hidden
+            className="inline-block opacity-[0.14] transition-opacity duration-500 data-[lit=1]:opacity-100 motion-reduce:opacity-100"
+          >
             {tok}
           </span>
         ) : (
           <span key={i} aria-hidden className="inline-block overflow-hidden pb-[0.08em] align-bottom">
-            <span data-piece className="inline-block origin-bottom-left will-change-transform">
+            <span data-piece className="inline-block origin-bottom-left">
               {tok === " " ? " " : tok}
             </span>
           </span>

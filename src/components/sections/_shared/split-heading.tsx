@@ -89,7 +89,7 @@ export function SplitHeading({
             <span key={i} className="-mb-[0.16em] -mt-[0.1em] inline-block overflow-hidden pb-[0.16em] pt-[0.1em] align-bottom">
               <span
                 data-word
-                className={cn("inline-block origin-bottom-left will-change-transform", tok.accent && accentClassName)}
+                className={cn("inline-block origin-bottom-left", tok.accent && accentClassName)}
               >
                 {tok.text}
               </span>

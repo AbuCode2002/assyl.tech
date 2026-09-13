@@ -1,24 +1,32 @@
 "use client";
 
-import { useEffect, useRef, useState, type CSSProperties, type PointerEvent } from "react";
+import { useEffect, useRef, useState, type PointerEvent } from "react";
 import { gsap, prefersReducedMotion, ScrollTrigger, useGSAP } from "@/lib/gsap";
-
-/*
- * Mask centre = blend of an idle Lissajous drift (--dx/--dy) and the pointer (--px/--py),
- * weighted by --h (0 idle → 1 hovering), so entering/leaving never jumps.
- */
-const X = "calc((var(--dx,0) * (1 - var(--h,0)) + var(--px,0) * var(--h,0)) * 1px)";
-const Y = "calc((var(--dy,0) * (1 - var(--h,0)) + var(--py,0) * var(--h,0)) * 1px)";
-const MASK = `radial-gradient(circle calc(var(--r,0) * 1px) at ${X} ${Y}, #000 0%, rgb(0 0 0 / 0.85) 38%, transparent 100%)`;
 
 const typeClass = "block w-max whitespace-nowrap font-display font-semibold leading-[0.8] tracking-[-0.045em]";
 
-/** Edge-to-edge outlined wordmark; a cursor-following radial mask reveals the gradient fill below. */
+/**
+ * Edge-to-edge outlined wordmark with a "lens" that reveals the gradient fill.
+ * The lens is a small circular clip moved with transforms only (the fill inside counter-moves),
+ * so nothing but the lens area is ever repainted — animating a full-width mask-image was far too heavy.
+ */
 export function FooterWordmark({ text }: { text: string }) {
   const boxRef = useRef<HTMLDivElement>(null);
   const measureRef = useRef<HTMLSpanElement>(null);
+  const lensRef = useRef<HTMLDivElement>(null);
+  const fillRef = useRef<HTMLSpanElement>(null);
   const [size, setSize] = useState<number | null>(null);
-  const hover = useRef<{ px: gsap.QuickToFunc; py: gsap.QuickToFunc } | null>(null);
+  const [radius, setRadius] = useState(160);
+  const pos = useRef({ x: 0, y: 0, r: 160 });
+  const hovering = useRef(false);
+  const follow = useRef<{ x: gsap.QuickToFunc; y: gsap.QuickToFunc } | null>(null);
+  const driftRef = useRef<gsap.core.Timeline | null>(null);
+
+  const apply = () => {
+    const { x, y, r } = pos.current;
+    if (lensRef.current) lensRef.current.style.transform = `translate3d(${x - r}px, ${y - r}px, 0)`;
+    if (fillRef.current) fillRef.current.style.transform = `translate3d(${r - x}px, ${r - y}px, 0)`;
+  };
 
   // Fit the word to the container width exactly (font metrics are only known once the font loads).
   useEffect(() => {
@@ -34,6 +42,9 @@ export function FooterWordmark({ text }: { text: string }) {
         const current = parseFloat(getComputedStyle(measure).fontSize);
         const next = (current * box.clientWidth) / width;
         setSize((prev) => (prev !== null && Math.abs(prev - next) < 0.5 ? prev : next));
+        const r = Math.round(Math.max(90, box.clientWidth * 0.14));
+        pos.current.r = r;
+        setRadius(r);
       });
     };
     const ro = new ResizeObserver(fit);
@@ -49,39 +60,29 @@ export function FooterWordmark({ text }: { text: string }) {
     () => {
       const box = boxRef.current;
       if (!box) return;
-      const w = () => box.clientWidth;
-      const h = () => box.clientHeight;
-      gsap.set(box, { "--dx": w() * 0.5, "--dy": h() * 0.5, "--px": w() * 0.5, "--py": h() * 0.5, "--h": 0, "--r": w() * 0.16 });
+      pos.current.x = box.clientWidth * 0.5;
+      pos.current.y = box.clientHeight * 0.5;
+      apply();
       if (prefersReducedMotion()) return;
 
-      const driftX = gsap.fromTo(
-        box,
-        { "--dx": () => w() * 0.08 },
-        { "--dx": () => w() * 0.92, duration: 6.5, ease: "sine.inOut", repeat: -1, yoyo: true, paused: true },
-      );
-      const driftY = gsap.fromTo(
-        box,
-        { "--dy": () => h() * 0.15 },
-        { "--dy": () => h() * 0.85, duration: 2.9, ease: "sine.inOut", repeat: -1, yoyo: true, paused: true },
-      );
+      // idle Lissajous drift, only while the footer is on screen and not hovered
+      const drift = gsap.timeline({ paused: true, repeat: -1, onUpdate: apply });
+      drift
+        .fromTo(pos.current, { x: () => box.clientWidth * 0.1 }, { x: () => box.clientWidth * 0.9, duration: 6.5, ease: "sine.inOut", yoyo: true, repeat: 1 }, 0)
+        .fromTo(pos.current, { y: () => box.clientHeight * 0.2 }, { y: () => box.clientHeight * 0.8, duration: 3.25, ease: "sine.inOut", yoyo: true, repeat: 3 }, 0);
+
       ScrollTrigger.create({
         trigger: box,
         start: "top bottom",
         end: "bottom top",
-        onToggle: (self) => {
-          if (self.isActive) {
-            driftX.play();
-            driftY.play();
-          } else {
-            driftX.pause();
-            driftY.pause();
-          }
-        },
+        onToggle: (self) => (self.isActive && !hovering.current ? drift.play() : drift.pause()),
       });
-      hover.current = {
-        px: gsap.quickTo(box, "--px", { duration: 0.5, ease: "power3" }),
-        py: gsap.quickTo(box, "--py", { duration: 0.5, ease: "power3" }),
+
+      follow.current = {
+        x: gsap.quickTo(pos.current, "x", { duration: 0.5, ease: "power3", onUpdate: apply }),
+        y: gsap.quickTo(pos.current, "y", { duration: 0.5, ease: "power3", onUpdate: apply }),
       };
+      driftRef.current = drift;
     },
     { scope: boxRef },
   );
@@ -90,27 +91,25 @@ export function FooterWordmark({ text }: { text: string }) {
     const r = boxRef.current!.getBoundingClientRect();
     return { x: e.clientX - r.left, y: e.clientY - r.top };
   };
+
   const onEnter = (e: PointerEvent) => {
-    const box = boxRef.current;
-    if (!box || e.pointerType !== "mouse" || !hover.current) return;
-    const { x, y } = local(e);
-    gsap.set(box, { "--px": x, "--py": y });
-    gsap.to(box, { "--h": 1, "--r": box.clientWidth * 0.2, duration: 0.8, ease: "power3.out", overwrite: "auto" });
+    if (e.pointerType !== "mouse" || !follow.current) return;
+    hovering.current = true;
+    driftRef.current?.pause();
   };
   const onMove = (e: PointerEvent) => {
-    if (e.pointerType !== "mouse" || !hover.current) return;
+    if (e.pointerType !== "mouse" || !follow.current) return;
     const { x, y } = local(e);
-    hover.current.px(x);
-    hover.current.py(y);
+    follow.current.x(x);
+    follow.current.y(y);
   };
   const onLeave = (e: PointerEvent) => {
-    const box = boxRef.current;
-    if (!box || e.pointerType !== "mouse" || !hover.current) return;
-    gsap.to(box, { "--h": 0, "--r": box.clientWidth * 0.16, duration: 1.1, ease: "power3.inOut", overwrite: "auto" });
+    if (e.pointerType !== "mouse") return;
+    hovering.current = false;
+    driftRef.current?.play();
   };
 
   const fontSize = size ? `${size}px` : "12.4vw";
-  const maskStyle: CSSProperties = { fontSize, maskImage: MASK, WebkitMaskImage: MASK };
 
   return (
     <div
@@ -119,14 +118,20 @@ export function FooterWordmark({ text }: { text: string }) {
       onPointerEnter={onEnter}
       onPointerMove={onMove}
       onPointerLeave={onLeave}
-      className="relative select-none overflow-x-clip"
+      className="relative select-none overflow-hidden"
     >
       <span ref={measureRef} className={`text-outline ${typeClass}`} style={{ fontSize }}>
         {text}
       </span>
-      <span className={`text-signal-gradient pointer-events-none absolute left-0 top-0 ${typeClass}`} style={maskStyle}>
-        {text}
-      </span>
+      <div
+        ref={lensRef}
+        className="pointer-events-none absolute left-0 top-0 overflow-hidden rounded-full will-change-transform [mask-image:radial-gradient(circle,#000_40%,transparent_71%)]"
+        style={{ width: radius * 2, height: radius * 2 }}
+      >
+        <span ref={fillRef} className={`text-signal-gradient absolute left-0 top-0 will-change-transform ${typeClass}`} style={{ fontSize }}>
+          {text}
+        </span>
+      </div>
     </div>
   );
 }

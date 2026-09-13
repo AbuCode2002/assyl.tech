@@ -46,7 +46,7 @@ export function MagneticButton({ children, variant = "primary", size = "md", hre
 
   const classes = cn(
     "group/btn relative inline-flex select-none items-center justify-center overflow-hidden rounded-full font-mono uppercase tracking-[0.14em]",
-    "transition-[transform,border-color,background-color] duration-500 ease-out-expo will-change-transform",
+    "transition-[transform,border-color,background-color] duration-500 ease-out-expo",
     size === "lg" ? "h-14 px-8 text-[12px]" : "h-11 px-6 text-[11px]",
     variants[variant],
     className,

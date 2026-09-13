@@ -5,7 +5,6 @@ import { Canvas, useFrame, useThree } from "@react-three/fiber";
 import { useEffect, useMemo, useRef, useState, type RefObject } from "react";
 import * as THREE from "three";
 import { BRACKET_STROKE, LOGO_BOX, LOGO_PATHS } from "@/components/ui/logo-paths";
-import { snoise3 } from "./glsl";
 
 export type HeroSceneState = {
   /** 0 = cloud, 1 = logo */
@@ -90,7 +89,6 @@ const vertex = /* glsl */ `
   attribute vec3 aColor;
   varying vec3 vColor;
   varying float vAlpha;
-  ${snoise3}
 
   void main() {
     // staggered morph so particles arrive in waves
@@ -105,12 +103,13 @@ const vertex = /* glsl */ `
 
     vec3 p = mix(cloud, aLogo, m);
 
-    float t = uTime * 0.18;
-    vec3 q = p * 0.55;
+    // cheap organic drift: per-particle phases + a spatial term so neighbours move coherently
+    // (3 simplex-noise calls per vertex per frame were too heavy for integrated GPUs)
+    float t = uTime;
     vec3 drift = vec3(
-      snoise(q + vec3(t, 0.0, aRand.y * 7.0)),
-      snoise(q + vec3(0.0, t, aRand.z * 7.0)),
-      snoise(q + vec3(aRand.w * 7.0, 0.0, t))
+      sin(t * 0.55 + aRand.y * 6.2832 + p.y * 0.9),
+      cos(t * 0.47 + aRand.z * 6.2832 + p.x * 0.9),
+      sin(t * 0.38 + aRand.w * 6.2832 + p.x * 0.5)
     );
     float amp = mix(0.42, 0.028, m) + uScatter * 0.9;
     p += drift * amp;
@@ -232,7 +231,7 @@ function LogoParticles({ state, count, width, offset }: { state: RefObject<HeroS
     const u = material.uniforms;
     u.uTime!.value += delta;
     u.uPixelRatio!.value = gl.getPixelRatio();
-    u.uSize!.value = size.width < 768 ? 44 : 58;
+    u.uSize!.value = size.width < 768 ? 52 : 66;
     u.uMorph!.value = THREE.MathUtils.damp(u.uMorph!.value, state.current.morph, 1.6, delta);
     u.uScatter!.value = THREE.MathUtils.damp(u.uScatter!.value, state.current.scatter, 6, delta);
     (u.uMouse!.value as THREE.Vector3).lerp(mouse.current, 1 - Math.exp(-delta * 8));
@@ -288,26 +287,27 @@ function Layout({ state }: { state: RefObject<HeroSceneState> }) {
   const tablet = size.width < 1100;
   const width = mobile ? 4.6 : tablet ? 5.2 : 6.2;
   const offset = useMemo<[number, number]>(() => (mobile ? [0, 1.25] : tablet ? [1.2, 0.5] : [2.6, 0.15]), [mobile, tablet]);
-  const count = mobile ? 9000 : 18000;
+  const count = mobile ? 5000 : 10000;
   return (
     <>
       <LogoParticles key={`${count}-${width}`} state={state} count={count} width={width} offset={offset} />
-      <Dust count={mobile ? 500 : 1400} />
+      <Dust count={mobile ? 250 : 600} />
     </>
   );
 }
 
 export default function ParticleLogoCanvas({ state, active }: { state: RefObject<HeroSceneState>; active: boolean }) {
-  const [dpr, setDpr] = useState(1.5);
+  const [dpr, setDpr] = useState(1);
   return (
     <Canvas
       frameloop={active ? "always" : "never"}
       dpr={dpr}
-      gl={{ antialias: false, alpha: true, powerPreference: "high-performance" }}
+      gl={{ antialias: false, alpha: true, powerPreference: "high-performance", stencil: false, depth: false }}
       camera={{ position: [0, 0, 9], fov: 45, near: 0.1, far: 60 }}
       style={{ position: "absolute", inset: 0 }}
     >
-      <PerformanceMonitor onIncline={() => setDpr(Math.min(1.75, window.devicePixelRatio))} onDecline={() => setDpr(1)} flipflops={3} />
+      {/* start cheap, raise resolution only if the device keeps a steady frame rate */}
+      <PerformanceMonitor onIncline={() => setDpr(Math.min(1.5, window.devicePixelRatio))} onDecline={() => setDpr(0.8)} flipflops={3} />
       <Layout state={state} />
     </Canvas>
   );

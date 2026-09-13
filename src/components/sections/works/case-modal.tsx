@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { useEffect, useEffectEvent, useId, useRef, useState, type CSSProperties } from "react";
+import { useEffect, useEffectEvent, useId, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import { useTranslations } from "next-intl";
 import { useLenis, useScrollTo } from "@/components/providers/smooth-scroll";
@@ -182,7 +182,7 @@ export function CaseModal({ items, index, onNavigate, onClose }: Props) {
       <div data-m-content className="absolute inset-0 bg-void">
         <div ref={scrollerRef} data-lenis-prevent className="h-full overflow-y-auto overscroll-contain [scrollbar-width:thin]">
           {/* top bar */}
-          <div className="sticky top-0 z-30 border-b border-line bg-void/80 backdrop-blur-xl">
+          <div className="sticky top-0 z-30 border-b border-line bg-void/[0.97]">
             <div className="container-x flex h-16 items-center justify-between gap-4">
               <div className="flex min-w-0 items-center gap-3 font-mono text-[11px] uppercase tracking-[0.16em] text-dim sm:gap-4">
                 <span className="text-signal">{t("modal.label")}</span>
@@ -273,13 +273,12 @@ export function CaseModal({ items, index, onNavigate, onClose }: Props) {
               <div className="lg:order-2 lg:col-span-7">
                 <div data-m-reveal className="lg:sticky lg:top-24">
                   <div
-                    style={{ "--accent": item.accent } as CSSProperties}
                     className={cn(
                       "relative isolate overflow-hidden rounded-2xl border border-line bg-carbon",
                       mobile ? "aspect-[4/5] max-h-[calc(100svh-140px)] w-full" : "aspect-[4/3.2] sm:aspect-[16/11]",
                     )}
                   >
-                    <StageBackdrop />
+                    <StageBackdrop accent={item.accent} />
                     <div className="absolute inset-0 flex items-center justify-center">
                       <ModalVideo key={item.id} item={item} mobile={mobile} />
                     </div>
@@ -486,7 +485,7 @@ function ModalVideo({ item, mobile }: { item: WorkItem; mobile: boolean }) {
         type="button"
         onClick={toggle}
         aria-label={paused ? t("modal.play") : t("modal.pause")}
-        className="absolute bottom-10 right-8 z-10 grid size-11 place-items-center rounded-full border border-line-strong bg-void/70 text-fg backdrop-blur-md transition-colors duration-300 hover:border-fg hover:bg-fg hover:text-void sm:bottom-12"
+        className="absolute bottom-10 right-8 z-10 grid size-11 place-items-center rounded-full border border-line-strong bg-void/90 text-fg transition-colors duration-300 hover:border-fg hover:bg-fg hover:text-void sm:bottom-12"
       >
         {paused ? (
           <svg aria-hidden viewBox="0 0 12 12" className="size-3" fill="currentColor">

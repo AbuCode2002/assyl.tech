@@ -61,16 +61,16 @@ export function WorksIndex({ items }: { items: WorkItem[] }) {
       cards.forEach((card) => {
         const stage = card.querySelector("[data-stage]");
         const media = card.querySelector("[data-media]");
+        const curtain = card.querySelector("[data-curtain]");
         const reveal = card.querySelectorAll("[data-reveal]");
+        // Compositor-only reveal. Measured on an Intel UHD 620: an animated clip-path, and any *scale*
+        // animation of layers holding the screenshots, re-rasterised/re-decoded images every frame on first view.
+        // A solid-colour curtain can scale freely (nothing to re-raster); media only translates.
         gsap
           .timeline({ scrollTrigger: { trigger: card, start: "top 88%", once: true } })
-          .fromTo(
-            stage,
-            { clipPath: "inset(14% 10% 0% 10% round 16px)" },
-            { clipPath: "inset(0% 0% 0% 0% round 16px)", duration: 1.5, ease: "expo.out", clearProps: "clipPath" },
-            0,
-          )
-          .fromTo(media, { scale: 1.2, yPercent: 8 }, { scale: 1, yPercent: 0, duration: 1.7, ease: "expo.out", clearProps: "transform" }, 0)
+          .fromTo(stage, { yPercent: 6, opacity: 0 }, { yPercent: 0, opacity: 1, duration: 1.3, ease: "expo.out", clearProps: "transform,opacity" }, 0)
+          .fromTo(curtain, { scaleY: 1 }, { scaleY: 0, duration: 1.4, ease: "expo.inOut" }, 0.05)
+          .fromTo(media, { yPercent: 10 }, { yPercent: 0, duration: 1.7, ease: "expo.out", clearProps: "transform" }, 0)
           .fromTo(reveal, { y: 28, opacity: 0 }, { y: 0, opacity: 1, duration: 1.1, stagger: 0.07, ease: "expo.out" }, 0.25);
       });
 

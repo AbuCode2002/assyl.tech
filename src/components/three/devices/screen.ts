@@ -199,8 +199,8 @@ export function roundedSlab(w: number, h: number, depth: number, radius: number,
     bevelEnabled: true,
     bevelThickness: bevel,
     bevelSize: bevel,
-    bevelSegments: 5,
-    curveSegments: 20,
+    bevelSegments: 3,
+    curveSegments: 12,
   });
   geo.translate(0, 0, -(depth - bevel * 2) / 2);
   geo.computeVertexNormals();

@@ -7,7 +7,9 @@ export function PhoneFrame({ children, className }: { children: ReactNode; class
     <div
       className={cn(
         "relative aspect-[9/20] rounded-[36px] bg-[linear-gradient(160deg,#2a3142_0%,#10141d_38%,#0a0d14_70%,#1d2331_100%)] p-[5px]",
-        "shadow-[inset_0_0_0_1px_rgb(255_255_255/0.14),0_40px_80px_-30px_rgb(0_0_0/0.9)]",
+        // hairline only: an 80px blurred drop shadow was re-rasterised on every frame of the card
+        // reveal/parallax transforms (measured 6 dropped frames → 0) and is invisible on the dark stage anyway
+        "shadow-[inset_0_0_0_1px_rgb(255_255_255/0.14)]",
         className,
       )}
     >
@@ -45,7 +47,7 @@ export function BrowserFrame({
     <div
       style={style}
       className={cn(
-        "relative overflow-hidden rounded-[10px] border border-line-strong bg-ink shadow-[0_40px_80px_-40px_rgb(0_0_0/0.9)] sm:rounded-xl",
+        "relative overflow-hidden rounded-[10px] border border-line-strong bg-ink sm:rounded-xl",
         className,
       )}
     >
@@ -69,13 +71,24 @@ export function BrowserFrame({
   );
 }
 
-/** Faint grid + accent glow behind a device. Parent must be `relative` and set `--accent`. */
-export function StageBackdrop({ className }: { className?: string }) {
+/** 44px grid cell as a tiny SVG tile: decoded once and tiled, unlike repeating CSS gradients. */
+const GRID_TILE =
+  "url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='44' height='44'%3E%3Cpath d='M0 .5H44M.5 0V44' stroke='%23fff' stroke-opacity='.05'/%3E%3C/svg%3E\")";
+
+/**
+ * Faint grid + accent glow behind a device.
+ * Kept deliberately cheap: repeating gradients under a mask plus a color-mix() glow cost ~150 ms of GPU
+ * raster per card on integrated graphics (followed by a 400 ms present stall). Now: one image tile,
+ * one plain radial gradient, and a vignette made of the same gradient type.
+ */
+export function StageBackdrop({ className, accent }: { className?: string; accent: string }) {
   return (
     <span aria-hidden className={cn("pointer-events-none absolute inset-0", className)}>
-      <span className="absolute inset-0 bg-[radial-gradient(65%_55%_at_50%_55%,color-mix(in_oklab,var(--accent)_22%,transparent),transparent_72%)] opacity-70 transition-opacity duration-700 group-hover/work:opacity-100" />
-      <span className="absolute inset-0 [background-image:linear-gradient(rgb(255_255_255/0.045)_1px,transparent_1px),linear-gradient(90deg,rgb(255_255_255/0.045)_1px,transparent_1px)] [background-position:center] [background-size:44px_44px] [mask-image:radial-gradient(75%_70%_at_50%_50%,#000_30%,transparent_100%)]" />
-      <span className="absolute inset-x-0 bottom-0 h-1/3 bg-linear-to-t from-carbon to-transparent" />
+      <span className="absolute inset-0 opacity-60" style={{ backgroundImage: GRID_TILE, backgroundPosition: "center" }} />
+      <span
+        className="absolute inset-0 opacity-70 transition-opacity duration-700 group-hover/work:opacity-100"
+        style={{ background: `radial-gradient(65% 55% at 50% 55%, ${accent}38, transparent 72%), radial-gradient(90% 80% at 50% 45%, transparent 55%, #0a0d14 100%)` }}
+      />
     </span>
   );
 }
