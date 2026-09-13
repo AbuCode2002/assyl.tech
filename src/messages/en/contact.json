@@ -1,0 +1,92 @@
+{
+  "eyebrow": "Contact",
+  "title": "Tell us about [your project]",
+  "subtitle": "We reply within one business day.",
+  "status": "Taking on projects",
+  "channelsLabel": "Channels",
+  "channels": {
+    "instagram": "Instagram",
+    "telegram": "Telegram",
+    "whatsapp": "WhatsApp",
+    "email": "Email",
+    "phone": "Phone"
+  },
+  "newTab": "opens in a new tab",
+  "copy": "Copy",
+  "copyAria": "Copy: {value}",
+  "copied": "Copied",
+  "localTime": "Almaty time",
+  "coords": "Coordinates",
+  "form": {
+    "header": "NEW_REQUEST.form",
+    "headerSending": "TRANSMITTING…",
+    "headerSent": "REQUEST_ACCEPTED.log",
+    "required": "required",
+    "optional": "optional",
+    "groups": {
+      "contact": "Contact",
+      "services": "What you need",
+      "budget": "Budget",
+      "timeline": "Timeline",
+      "message": "About the project"
+    },
+    "fields": {
+      "name": "Name",
+      "phone": "Phone / WhatsApp",
+      "telegram": "Telegram",
+      "email": "Email",
+      "company": "Company",
+      "message": "Message"
+    },
+    "hints": {
+      "telegram": "@username",
+      "message": "Briefly: the task, the goal and what already exists"
+    },
+    "contactHint": "Leave at least one way to reach you: phone, Telegram or email",
+    "servicesHint": "Pick as many as you need",
+    "budget": {
+      "lt1m": "under 1M ₸",
+      "1to3m": "1–3M ₸",
+      "3to7m": "3–7M ₸",
+      "gt7m": "7M+ ₸",
+      "unknown": "Not sure yet"
+    },
+    "timeline": {
+      "asap": "ASAP",
+      "1to3": "1–3 months",
+      "3to6": "3–6 months",
+      "flex": "Flexible"
+    },
+    "consent": "I agree to the processing of my personal data",
+    "submit": "Send request",
+    "sending": "Sending…",
+    "errors": {
+      "nameRequired": "What should we call you?",
+      "nameShort": "Name must be at least 2 characters",
+      "nameLong": "Name must be 80 characters or fewer",
+      "phone": "Check the phone number",
+      "email": "Check the email address",
+      "telegram": "This value is too long",
+      "contact": "We need at least one contact: phone, Telegram or email",
+      "consent": "We can’t process the request without your consent",
+      "message": "Message must be 3000 characters or fewer",
+      "summary": "Please check the highlighted fields",
+      "rate": "Too many requests. Please try again later.",
+      "network": "Couldn’t send. Check your connection and try again.",
+      "server": "Something went wrong. Try again or message us directly."
+    },
+    "success": {
+      "eyebrow": "Request sent",
+      "title": "Request <accent>{number}</accent> received",
+      "titleNoNumber": "Request <accent>received</accent>",
+      "text": "Thank you! We’ll review the task and get back to you within one business day.",
+      "stepsLabel": "What happens next",
+      "steps": [
+        "We review the task and prepare questions",
+        "We get in touch to clarify the details",
+        "We propose a solution, timeline and budget"
+      ],
+      "again": "Send another"
+    }
+  }
+}

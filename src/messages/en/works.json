@@ -1,0 +1,38 @@
+{
+  "eyebrow": "Work",
+  "title": "Selected [work]",
+  "intro": "Products we designed, engineered and shipped: on-site mobile tools, analytics platforms and AI assistants.",
+  "indexLabel": "Case index",
+  "current": "Now on screen",
+  "viewCase": "View case",
+  "openCase": "Open case: {title}",
+  "preview": "Preview",
+  "live": "Playing",
+  "platforms": {
+    "mobile": "Mobile",
+    "web": "Web"
+  },
+  "meta": {
+    "category": "Category",
+    "year": "Year",
+    "platform": "Platform",
+    "client": "Client",
+    "stack": "Stack"
+  },
+  "modal": {
+    "label": "Case",
+    "close": "Close",
+    "closeAria": "Close case",
+    "prevAria": "Previous project: {title}",
+    "nextAria": "Next project: {title}",
+    "features": "What it does",
+    "stills": "Stills",
+    "still": "{title} — still {index}",
+    "play": "Play video",
+    "pause": "Pause video",
+    "nextProject": "Next project",
+    "ctaTitle": "Need something similar?",
+    "ctaText": "Tell us about the task — we’ll propose a solution and give you a realistic sense of timeline and budget.",
+    "cta": "I want a similar project"
+  }
+}

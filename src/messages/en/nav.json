@@ -1,0 +1,12 @@
+{
+  "works": "Work",
+  "services": "Services",
+  "process": "Process",
+  "contact": "Contact",
+  "cta": "Start a project",
+  "menu": "Open menu",
+  "close": "Close menu",
+  "preloader": {
+    "lines": ["initializing assyl.core", "loading modules [webgl, motion, i18n]", "compiling shaders", "system ready"]
+  }
+}

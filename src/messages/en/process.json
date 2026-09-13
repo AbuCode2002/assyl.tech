@@ -1,0 +1,40 @@
+{
+  "eyebrow": "Process",
+  "title": "How we [work]",
+  "intro": "Clear stages and regular demos: you see progress and shape the product at every step.",
+  "step": "Step",
+  "duration": "Duration",
+  "output": "Output",
+  "steps": [
+    {
+      "title": "Brief & discovery",
+      "description": "We dig into your business, users and constraints, then lock in goals, priorities and how we’ll know the product works.",
+      "deliverables": ["Goals & success metrics", "Feature map & priorities", "Timeline & budget estimate"],
+      "duration": "1–2 weeks"
+    },
+    {
+      "title": "Prototype & design",
+      "description": "We build a clickable prototype, validate the flows and take the interface to final design with motion and a design system.",
+      "deliverables": ["Clickable prototype", "UI design of key screens", "Design system"],
+      "duration": "2–4 weeks"
+    },
+    {
+      "title": "Development in sprints",
+      "description": "We work in two-week sprints. Each one ends with a demo of a working build — results, not status reports.",
+      "deliverables": ["Demo after every sprint", "Staging environment", "Transparent task backlog"],
+      "duration": "6+ weeks"
+    },
+    {
+      "title": "Testing & launch",
+      "description": "We test on real devices and real data, fix what we find, set up monitoring and ship the release.",
+      "deliverables": ["Real-device testing", "Store release & deploy", "Monitoring & analytics"],
+      "duration": "1–2 weeks"
+    },
+    {
+      "title": "Support & growth",
+      "description": "After launch we stay close: fixing, updating and evolving the product based on data and user feedback.",
+      "deliverables": ["Support & updates", "Data-driven features", "Regular reports"],
+      "duration": "Ongoing"
+    }
+  ]
+}

@@ -1,0 +1,16 @@
+{
+  "eyebrow": "About",
+  "location": "Almaty · Working worldwide",
+  "manifesto": "We are a team of engineers and designers. We turn complex business processes into fast, beautiful and intelligent digital products — from a field estimator's app to AI analytics for an entire university.",
+  "capabilities": [
+    { "title": "Mobile apps", "text": "iOS and Android: camera, offline mode, 3D visualisation and calculations right in your team's hands.", "tech": "iOS · Android · Cross-platform" },
+    { "title": "Web platforms", "text": "Websites, client portals, SaaS and dashboards that load instantly.", "tech": "Next.js · React · Node.js" },
+    { "title": "AI & chatbots", "text": "LLM assistants that understand your data and answer in seconds.", "tech": "LLM · RAG · Python" },
+    { "title": "Custom software", "text": "Automation, integrations, CRM and internal systems shaped around your process.", "tech": "API · PostgreSQL · Docker" }
+  ],
+  "terminal": ["assyl build --idea \"your project\"", "✓ analysis & architecture", "✓ prototype & design", "✓ development & testing", "→ launch & support"],
+  "principlesLabel": "Principles",
+  "principles": ["End-to-end — from idea to release", "Transparent stages and timelines", "Code that is easy to evolve"],
+  "marquee": ["Mobile apps", "Web platforms", "AI assistants", "3D & WebGL", "Automation", "Dashboards"],
+  "marqueeSmall": ["iOS", "Android", "Next.js", "React", "Three.js", "Python", "LLM", "PostgreSQL", "Docker", "Figma", "UI/UX"]
+}

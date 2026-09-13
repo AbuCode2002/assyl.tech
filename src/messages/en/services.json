@@ -1,0 +1,48 @@
+{
+  "eyebrow": "Services",
+  "title": "What we [build]",
+  "intro": "We take on the whole product — from idea and interface to backend, integrations and launch — or step in at the stage you need.",
+  "count": "{count} disciplines",
+  "deliverables": "What’s included",
+  "timeline": "Typical timeline",
+  "discuss": "Discuss",
+  "discussAria": "Discuss: {service}",
+  "items": {
+    "mobile": {
+      "short": "iOS and Android from a single codebase — with offline mode, camera, maps and 3D.",
+      "description": "We design and build mobile apps for customers and teams: from on-site tools with calculations and 3D visualisation to services with payments and user accounts. We publish to the App Store and Google Play and support every release.",
+      "deliverables": ["UX prototype", "UI design", "iOS & Android", "Backend & API", "Store release"],
+      "timeline": "8–16 weeks"
+    },
+    "web": {
+      "short": "Fast websites and landing pages that sell and rank well.",
+      "description": "Corporate websites, promo pages and landing pages for ad campaigns. We shape the structure and copy together with you, craft expressive design with motion, and set up analytics and lead delivery straight to Telegram or your CRM.",
+      "deliverables": ["Structure & prototype", "Design & motion", "Responsive build", "SEO foundation", "Analytics & forms"],
+      "timeline": "3–6 weeks"
+    },
+    "platform": {
+      "short": "Portals, marketplaces and SaaS with roles, billing and integrations.",
+      "description": "Complex web products: customer portals, B2B platforms, marketplaces and SaaS. We lay down an architecture that scales with load and set up roles and permissions, payments, and integrations with 1C, banks and third-party APIs.",
+      "deliverables": ["Architecture", "Frontend & backend", "Roles & access", "Integrations", "Infrastructure & CI/CD"],
+      "timeline": "12–24 weeks"
+    },
+    "ai": {
+      "short": "LLM-powered assistants and chatbots that work with your data.",
+      "description": "We bring language models into your operations: assistants over your knowledge base and internal data, support and sales bots in Telegram and WhatsApp, automated document processing. Access controls make sure the model only sees what it should.",
+      "deliverables": ["Scenarios & prompts", "RAG over your data", "Messenger integrations", "Access control", "Answer quality evaluation"],
+      "timeline": "4–10 weeks"
+    },
+    "dashboard": {
+      "short": "Live analytics: KPIs, maps and reports that read at a glance.",
+      "description": "We pull data from scattered systems into a single picture: interactive dashboards, maps, reports and 3D visualisations for leadership. Automatic refresh keeps every decision grounded in current numbers.",
+      "deliverables": ["Data collection & cleanup", "Metrics model", "Interactive dashboards", "Report exports", "Auto refresh"],
+      "timeline": "4–8 weeks"
+    },
+    "automation": {
+      "short": "CRM, operations and internal tools instead of spreadsheets and manual routine.",
+      "description": "We move processes out of Excel and chat threads into internal systems that fit: a CRM shaped around your funnel, inventory and production tracking, approvals and notifications. Services get connected so data is never entered twice.",
+      "deliverables": ["Process audit", "CRM & operations systems", "Integrations & API", "Notifications & bots", "Team onboarding"],
+      "timeline": "6–12 weeks"
+    }
+  }
+}

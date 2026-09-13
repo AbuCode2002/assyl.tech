@@ -1,0 +1,15 @@
+{
+  "eyebrow": "Work in motion",
+  "title": "Real products, not mockups",
+  "live": "Real screen recordings",
+  "hint": "Scroll to switch",
+  "cta": "More about this case",
+  "hud": {
+    "device": "Device",
+    "phone": "Smartphone",
+    "laptop": "Laptop",
+    "client": "Client",
+    "year": "Year",
+    "stream": "Stream"
+  }
+}

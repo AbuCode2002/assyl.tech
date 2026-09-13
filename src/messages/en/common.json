@@ -1,0 +1,18 @@
+{
+  "meta": {
+    "title": "assyl.tech — custom apps, websites and software development",
+    "description": "We build mobile apps, web platforms, AI assistants and custom software for business. Almaty, Kazakhstan."
+  },
+  "services": {
+    "mobile": "Mobile apps",
+    "web": "Websites & landings",
+    "platform": "Web platforms & SaaS",
+    "ai": "AI & chatbots",
+    "dashboard": "Dashboards & analytics",
+    "automation": "Automation & CRM",
+    "design": "UI/UX design",
+    "other": "Other"
+  },
+  "localTime": "Local time",
+  "skipToContent": "Skip to content"
+}

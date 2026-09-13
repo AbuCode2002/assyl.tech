@@ -1,0 +1,25 @@
+{
+  "cta": {
+    "eyebrow": "New project",
+    "title": "Got an idea? [Let’s talk]",
+    "text": "Describe the task in a couple of sentences — we’ll come back with questions and a first take on the solution.",
+    "button": "Discuss a project"
+  },
+  "tagline": "A development studio from Almaty. We build mobile apps, web platforms, AI assistants and custom software for business.",
+  "columns": {
+    "nav": "Navigation",
+    "social": "Contact",
+    "studio": "Studio"
+  },
+  "nav": {
+    "works": "Work",
+    "services": "Services",
+    "process": "Process",
+    "contact": "Contact"
+  },
+  "city": "Almaty, Kazakhstan",
+  "localTime": "Local time",
+  "copyright": "© 2026 assyl.tech",
+  "madeIn": "Made in Almaty",
+  "backToTop": "Back to top"
+}
