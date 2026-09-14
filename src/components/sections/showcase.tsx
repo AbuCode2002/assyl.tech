@@ -15,7 +15,7 @@ import { onIntroDone } from "@/lib/intro";
 
 const ShowcaseScene = dynamic(() => import("@/components/three/showcase-scene"), { ssr: false });
 
-const ORDER = ["storeplan", "krovla", "farabi-dashboard", "farabi-assistant"] as const;
+const ORDER = ["storeplan", "krovla", "ai-analytics", "ai-assistant"] as const;
 const START = [0, 0.36, 0.62, 0.88];
 const chapterAt = (p: number) => (p >= START[3]! ? 3 : p >= START[2]! ? 2 : p >= START[1]! ? 1 : 0);
 
@@ -162,7 +162,7 @@ export function Showcase() {
                 <span className="h-px w-8 bg-line-strong" />
                 <span>{current.category[locale]}</span>
               </div>
-              {/* tall enough for two-line titles ("Farabi AI · Сводка") + summary + stack chips */}
+              {/* tall enough for two-line titles + summary + stack chips */}
               <div className="relative min-h-[190px] md:min-h-[330px]">
                 {items.map((item, i) => (
                   <div
@@ -174,7 +174,7 @@ export function Showcase() {
                     )}
                   >
                     <h3 className="font-display text-[clamp(34px,4.4vw,68px)] font-medium leading-[0.95] tracking-[-0.035em]">
-                      {i === chapter ? <ScrambleText text={item.title} trigger="mount" duration={700} /> : item.title}
+                      {i === chapter ? <ScrambleText text={item.title[locale]} trigger="mount" duration={700} /> : item.title[locale]}
                     </h3>
                     <p className="mt-4 text-[15px] leading-relaxed text-dim max-md:line-clamp-3 md:text-[16px]">{item.summary[locale]}</p>
                     <div className="mt-5 flex flex-wrap gap-2 max-md:hidden">
@@ -240,7 +240,7 @@ export function Showcase() {
               type="button"
               onClick={() => goTo(i)}
               aria-current={i === chapter}
-              aria-label={item.title}
+              aria-label={item.title[locale]}
               className="group flex items-center gap-3"
             >
               <span
@@ -249,7 +249,7 @@ export function Showcase() {
                   i === chapter ? "text-fg opacity-100" : "translate-x-2 text-mute opacity-0 group-hover:translate-x-0 group-hover:opacity-100",
                 )}
               >
-                {item.title}
+                {item.title[locale]}
               </span>
               <span
                 className={cn(

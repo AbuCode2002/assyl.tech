@@ -5,7 +5,7 @@ type L = Record<Locale, string>;
 export type Project = {
   id: string;
   /** big display title */
-  title: string;
+  title: L;
   client: L;
   category: L;
   year: string;
@@ -26,7 +26,7 @@ export type Project = {
 export const projects: Project[] = [
   {
     id: "storeplan",
-    title: "Store Plan",
+    title: { ru: "Store Plan", kz: "Store Plan", en: "Store Plan" },
     client: { ru: "Ритейл", kz: "Ритейл", en: "Retail" },
     category: { ru: "Мобильное приложение · 3D", kz: "Мобильді қосымша · 3D", en: "Mobile app · 3D" },
     year: "2026",
@@ -48,7 +48,7 @@ export const projects: Project[] = [
   },
   {
     id: "krovla",
-    title: "Krovla",
+    title: { ru: "Krovla", kz: "Krovla", en: "Krovla" },
     client: { ru: "Кровельная компания", kz: "Шатыр компаниясы", en: "Roofing company" },
     category: { ru: "Мобильное приложение · Расчёты", kz: "Мобильді қосымша · Есептеулер", en: "Mobile app · Estimating" },
     year: "2026",
@@ -69,8 +69,8 @@ export const projects: Project[] = [
     accent: "#ff7a3d",
   },
   {
-    id: "farabi-dashboard",
-    title: "Farabi AI · Сводка",
+    id: "ai-analytics",
+    title: { ru: "AI-аналитика", kz: "AI-аналитика", en: "AI Analytics" },
     client: { ru: "Университет", kz: "Университет", en: "University" },
     category: { ru: "Веб-платформа · Аналитика", kz: "Веб-платформа · Аналитика", en: "Web platform · Analytics" },
     year: "2026",
@@ -92,8 +92,8 @@ export const projects: Project[] = [
     accent: "#56e1ff",
   },
   {
-    id: "farabi-assistant",
-    title: "Farabi AI · Ассистент",
+    id: "ai-assistant",
+    title: { ru: "AI-ассистент", kz: "AI-ассистент", en: "AI Assistant" },
     client: { ru: "Университет", kz: "Университет", en: "University" },
     category: { ru: "AI-ассистент · LLM", kz: "AI-ассистент · LLM", en: "AI assistant · LLM" },
     year: "2026",

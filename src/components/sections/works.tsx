@@ -7,19 +7,13 @@ import { SplitHeading } from "./_shared/split-heading";
 import type { WorkItem } from "./works/types";
 import { WorksIndex } from "./works/works-index";
 
-/** Decorative addresses for the browser frame. Consider moving to `Project.url`. */
-const FRAME_URLS: Record<string, string> = {
-  "farabi-dashboard": "farabi.ai/svodka",
-  "farabi-assistant": "farabi.ai/assistant",
-};
-
 export function Works() {
   const t = useTranslations("works");
   const locale = useLocale() as Locale;
 
   const items: WorkItem[] = projects.map((p) => ({
     id: p.id,
-    title: p.title,
+    title: p.title[locale],
     client: p.client[locale],
     category: p.category[locale],
     year: p.year,
@@ -31,7 +25,8 @@ export function Works() {
     features: p.features[locale],
     stack: p.stack,
     accent: p.accent,
-    url: FRAME_URLS[p.id] ?? `${p.id}.app`,
+    // decorative address in the browser frame — neutral, no client branding
+    url: `assyl.tech/cases/${p.id}`,
   }));
 
   return (

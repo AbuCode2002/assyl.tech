@@ -13,8 +13,8 @@ const byId = (id: string) => projects.find((p) => p.id === id)!;
 const CLIPS = {
   storeplan: byId("storeplan"),
   krovla: byId("krovla"),
-  dashboard: byId("farabi-dashboard"),
-  assistant: byId("farabi-assistant"),
+  dashboard: byId("ai-analytics"),
+  assistant: byId("ai-assistant"),
 };
 
 // ───────── timeline helpers ─────────
