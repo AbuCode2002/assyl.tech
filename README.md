@@ -22,6 +22,37 @@ Docker для разработки **не нужен**: если `DATABASE_URL` 
 > запускайте production-сборку: создайте `.env.local` с `AUTH_SECRET=<длинная случайная строка>`, затем
 > `npm run build` и `npm start`.
 
+## Работа с нескольких компьютеров
+
+**Один раз на новом компьютере** (нужны [Node.js 20+](https://nodejs.org) и [Git](https://git-scm.com)):
+
+```bash
+git clone https://github.com/AbuCode2002/assyl.tech.git
+cd assyl.tech
+npm install
+npm run dev
+```
+
+**Каждый раз, садясь за работу:**
+
+```bash
+git pull
+npm install        # только если изменился package.json
+npm run dev
+```
+
+**Закончили — отправить изменения:**
+
+```bash
+git add -A
+git commit -m "что сделано"
+git push
+```
+
+Важно: база данных у каждого компьютера своя (`.data/pglite`, в git не попадает) — заявки, аналитика и
+пароль админки локальные. Общими они станут после деплоя с единым `DATABASE_URL`.
+Файл `.env.local` тоже не хранится в git — создавайте его на каждом компьютере при необходимости.
+
 ## Где что менять
 
 | Что | Файл |

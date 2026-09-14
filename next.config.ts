@@ -4,7 +4,8 @@ import createNextIntlPlugin from "next-intl/plugin";
 const withNextIntl = createNextIntlPlugin("./src/i18n/request.ts");
 
 const nextConfig: NextConfig = {
-  output: "standalone",
+  // Standalone bundle only for the Docker image; locally `npm start` stays a plain `next start`.
+  output: process.env.BUILD_STANDALONE === "1" ? "standalone" : undefined,
   poweredByHeader: false,
   serverExternalPackages: ["@electric-sql/pglite", "fast-geoip", "postgres"],
   outputFileTracingIncludes: {
