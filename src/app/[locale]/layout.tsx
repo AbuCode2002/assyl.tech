@@ -3,8 +3,8 @@ import { JetBrains_Mono, Manrope, Unbounded } from "next/font/google";
 import { notFound } from "next/navigation";
 import { hasLocale, NextIntlClientProvider } from "next-intl";
 import { getTranslations, setRequestLocale } from "next-intl/server";
-import { htmlLang, routing } from "@/i18n/routing";
-import { site } from "@/lib/site";
+import { htmlLang, routing, type Locale } from "@/i18n/routing";
+import { contactLinks, site } from "@/lib/site";
 import { Analytics } from "@/components/providers/analytics";
 import { SmoothScroll } from "@/components/providers/smooth-scroll";
 import "../globals.css";
@@ -55,6 +55,28 @@ export async function generateMetadata({ params }: LayoutProps<"/[locale]">): Pr
       locale: htmlLang[locale as keyof typeof htmlLang],
     },
     twitter: { card: "summary_large_image", title: t("title"), description: t("description") },
+    // Google Search Console ownership: set GOOGLE_SITE_VERIFICATION to the code from the "HTML tag" method
+    verification: process.env.GOOGLE_SITE_VERIFICATION ? { google: process.env.GOOGLE_SITE_VERIFICATION } : undefined,
+  };
+}
+
+/** Structured data: who we are, what we do and how to reach us — read by search engines. */
+function organizationJsonLd(locale: Locale, description: string, services: string[]) {
+  return {
+    "@context": "https://schema.org",
+    "@type": "ProfessionalService",
+    "@id": `${site.url}/#studio`,
+    name: site.name,
+    url: site.url,
+    description,
+    email: site.contacts.email,
+    telephone: site.contacts.phone,
+    image: `${site.url}/icon.svg`,
+    address: { "@type": "PostalAddress", addressLocality: site.city[locale], addressCountry: "KZ" },
+    areaServed: "KZ",
+    sameAs: [contactLinks.instagram, contactLinks.telegram],
+    knowsLanguage: ["ru", "kk", "en"],
+    makesOffer: services.map((name) => ({ "@type": "Offer", itemOffered: { "@type": "Service", name } })),
   };
 }
 
@@ -62,6 +84,10 @@ export default async function LocaleLayout({ children, params }: LayoutProps<"/[
   const { locale } = await params;
   if (!hasLocale(routing.locales, locale)) notFound();
   setRequestLocale(locale);
+
+  const t = await getTranslations({ locale, namespace: "common" });
+  const services = Object.values(t.raw("services") as Record<string, string>).filter((n) => n !== t("services.other"));
+  const jsonLd = organizationJsonLd(locale, t("meta.description"), services);
 
   return (
     <html lang={htmlLang[locale]} className={`${unbounded.variable} ${manrope.variable} ${jetbrains.variable}`} suppressHydrationWarning>
@@ -71,6 +97,7 @@ export default async function LocaleLayout({ children, params }: LayoutProps<"/[
           <Analytics />
         </NextIntlClientProvider>
         <div aria-hidden className="grain-overlay" />
+        <script type="application/ld+json" suppressHydrationWarning dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
       </body>
     </html>
   );
