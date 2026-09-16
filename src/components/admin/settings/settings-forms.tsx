@@ -57,7 +57,7 @@ export function TelegramForm({ initial }: { initial: { botToken: string; chatId:
             className="font-mono text-[13px]"
           />
         </Field>
-        <Field label="Chat ID" htmlFor="chatId" hint="Личный чат, группа (-100…) или @канал">
+        <Field label="Chat ID" htmlFor="chatId" hint="Личный чат, группа (-100…) или @канал. Несколько получателей — через запятую">
           <Input
             id="chatId"
             name="chatId"
