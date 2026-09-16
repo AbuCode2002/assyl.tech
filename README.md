@@ -87,7 +87,7 @@ git push
 гео, устройства, глубина скролла, просмотр секций, клики по кнопкам, воронка до заявки, «онлайн сейчас».
 IP-адреса не хранятся — только солёный хэш.
 
-Для рекламы используйте UTM-ссылки, например: `https://assyl.tech/?utm_source=instagram&utm_medium=bio&utm_campaign=profile`.
+Для рекламы используйте UTM-ссылки, например: `https://assyltech.kz/?utm_source=instagram&utm_medium=bio&utm_campaign=profile`.
 
 ## Деплой
 
@@ -102,7 +102,7 @@ docker compose up -d --build
 Сайт поднимется на порту 3000 — поставьте перед ним Nginx/Caddy с HTTPS. Пример для Caddy:
 
 ```
-assyl.tech {
+assyltech.kz {
   reverse_proxy localhost:3000
 }
 ```
@@ -131,11 +131,11 @@ assyl.tech {
    | `ANALYTICS_SALT` | другая случайная строка |
    | `ADMIN_EMAIL` | ваш email для входа в админку |
    | `ADMIN_PASSWORD` | пароль для входа в админку |
-   | `NEXT_PUBLIC_SITE_URL` | адрес сайта, например `https://assyl.tech` |
+   | `NEXT_PUBLIC_SITE_URL` | адрес сайта, например `https://assyltech.kz` |
    | `TELEGRAM_BOT_TOKEN`, `TELEGRAM_CHAT_ID` | необязательно, можно задать позже в админке |
 
 5. **Deploy.** Через пару минут сайт открывается по адресу вида `assyl-tech.vercel.app`.
-6. **Домен.** Settings → Domains → добавьте `assyl.tech` и `www.assyl.tech` и пропишите у регистратора
+6. **Домен.** Settings → Domains → добавьте `assyltech.kz` и `www.assyltech.kz` и пропишите у регистратора
    DNS-записи, которые покажет Vercel (обычно `A 76.76.21.21` для корня и `CNAME cname.vercel-dns.com` для www).
 7. Дальше каждый `git push` в ветку `main` автоматически обновляет сайт.
 

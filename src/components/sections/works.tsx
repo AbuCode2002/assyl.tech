@@ -26,7 +26,7 @@ export function Works() {
     stack: p.stack,
     accent: p.accent,
     // decorative address in the browser frame — neutral, no client branding
-    url: `assyl.tech/cases/${p.id}`,
+    url: `assyltech.kz/cases/${p.id}`,
   }));
 
   return (

@@ -3,7 +3,7 @@
  */
 export const site = {
   name: "assyl.tech",
-  url: process.env.NEXT_PUBLIC_SITE_URL ?? "https://assyl.tech",
+  url: process.env.NEXT_PUBLIC_SITE_URL ?? "https://assyltech.kz",
   city: { ru: "Алматы", kz: "Алматы", en: "Almaty" },
   coords: "43.2389° N · 76.8897° E",
   timezone: "Asia/Almaty",
