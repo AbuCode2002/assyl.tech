@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from "next";
-import { JetBrains_Mono, Manrope, Unbounded } from "next/font/google";
+import { JetBrains_Mono, Manrope, Noto_Sans_Mono, Unbounded } from "next/font/google";
 import { notFound } from "next/navigation";
 import { hasLocale, NextIntlClientProvider } from "next-intl";
 import { getTranslations, setRequestLocale } from "next-intl/server";
@@ -19,10 +19,20 @@ const manrope = Manrope({
   variable: "--font-manrope",
   display: "swap",
 });
+// JetBrains Mono has no Ә, Ғ, Қ, Ң, Ұ, Һ — those fall through to Noto Sans Mono, which keeps the
+// monospace rhythm. adjustFontFallback is off so the generated fallback family does not win first.
+const notoMono = Noto_Sans_Mono({
+  subsets: ["latin", "cyrillic", "cyrillic-ext"],
+  weight: ["400", "500"],
+  variable: "--font-noto-mono",
+  display: "swap",
+});
 const jetbrains = JetBrains_Mono({
   subsets: ["latin", "cyrillic", "cyrillic-ext"],
   variable: "--font-jetbrains",
   display: "swap",
+  adjustFontFallback: false,
+  fallback: ["Noto Sans Mono", "ui-monospace", "monospace"],
 });
 
 export function generateStaticParams() {
@@ -90,7 +100,7 @@ export default async function LocaleLayout({ children, params }: LayoutProps<"/[
   const jsonLd = organizationJsonLd(locale, t("meta.description"), services);
 
   return (
-    <html lang={htmlLang[locale]} className={`${unbounded.variable} ${manrope.variable} ${jetbrains.variable}`} suppressHydrationWarning>
+    <html lang={htmlLang[locale]} className={`${unbounded.variable} ${manrope.variable} ${jetbrains.variable} ${notoMono.variable}`} suppressHydrationWarning>
       <body className="min-h-dvh overflow-x-clip">
         <NextIntlClientProvider>
           <SmoothScroll>{children}</SmoothScroll>

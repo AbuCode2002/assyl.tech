@@ -29,7 +29,7 @@
 
   --font-display: var(--font-unbounded), "Unbounded", system-ui, sans-serif;
   --font-sans: var(--font-manrope), "Manrope", system-ui, sans-serif;
-  --font-mono: var(--font-jetbrains), "JetBrains Mono", ui-monospace, monospace;
+  --font-mono: var(--font-jetbrains), var(--font-noto-mono), ui-monospace, monospace;
 
   --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
   --ease-in-out-expo: cubic-bezier(0.87, 0, 0.13, 1);
