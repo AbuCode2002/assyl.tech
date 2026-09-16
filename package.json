@@ -10,7 +10,8 @@
     "build": "next build",
     "start": "next start",
     "preview": "next build && next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "db:migrate": "drizzle-kit migrate"
   },
   "dependencies": {
     "@electric-sql/pglite": "^0.5.8",

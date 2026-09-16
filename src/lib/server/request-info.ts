@@ -47,7 +47,8 @@ async function lookupGeo(h: Headers, ip: string | null): Promise<{ country: stri
   if (headerCountry && headerCountry !== "XX") {
     return { country: headerCountry.toUpperCase(), city: headerCity ? decodeURIComponent(headerCity) : null };
   }
-  if (!ip || isPrivateIp(ip)) return { country: null, city: null };
+  // On Vercel the headers above always answer; the offline database is for self-hosting.
+  if (!ip || isPrivateIp(ip) || process.env.VERCEL) return { country: null, city: null };
   try {
     const geoip = (await import("fast-geoip")).default;
     const res = await geoip.lookup(ip.replace(/^::ffff:/, ""));

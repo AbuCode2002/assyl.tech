@@ -109,11 +109,37 @@ assyl.tech {
 
 Если используете Cloudflare или Nginx с GeoIP — страна/город берутся из заголовков; иначе используется встроенная офлайн-база GeoIP.
 
-### Вариант 2 — Vercel + Neon
+### Вариант 2 — Vercel + Neon (быстрый старт, бесплатно)
 
-1. Создайте бесплатную базу на [neon.tech](https://neon.tech), скопируйте connection string.
-2. Импортируйте репозиторий в Vercel, добавьте переменные окружения из `.env.example` (`DATABASE_URL` = строка Neon).
-3. Deploy. Гео подтягивается из заголовков Vercel автоматически.
+1. **База данных.** На [neon.tech](https://neon.tech) войдите через GitHub → Create project (регион Frankfurt) →
+   скопируйте **Connection string** из блока Connect (вариант **Pooled connection**, в строке есть `-pooler`).
+2. **Проект.** На [vercel.com](https://vercel.com) войдите через GitHub → Add New → Project → выберите
+   репозиторий `assyl.tech` → Import.
+3. **Build Command** замените на:
+
+   ```
+   npm run db:migrate && npm run build
+   ```
+
+   Так таблицы создаются на этапе сборки.
+4. **Environment Variables** — добавьте перед первым деплоем:
+
+   | Переменная | Значение |
+   |---|---|
+   | `DATABASE_URL` | строка подключения из Neon (pooled) |
+   | `AUTH_SECRET` | длинная случайная строка (`openssl rand -base64 48`) |
+   | `ANALYTICS_SALT` | другая случайная строка |
+   | `ADMIN_EMAIL` | ваш email для входа в админку |
+   | `ADMIN_PASSWORD` | пароль для входа в админку |
+   | `NEXT_PUBLIC_SITE_URL` | адрес сайта, например `https://assyl.tech` |
+   | `TELEGRAM_BOT_TOKEN`, `TELEGRAM_CHAT_ID` | необязательно, можно задать позже в админке |
+
+5. **Deploy.** Через пару минут сайт открывается по адресу вида `assyl-tech.vercel.app`.
+6. **Домен.** Settings → Domains → добавьте `assyl.tech` и `www.assyl.tech` и пропишите у регистратора
+   DNS-записи, которые покажет Vercel (обычно `A 76.76.21.21` для корня и `CNAME cname.vercel-dns.com` для www).
+7. Дальше каждый `git push` в ветку `main` автоматически обновляет сайт.
+
+Гео определяется по заголовкам Vercel, встроенная офлайн-база GeoIP там не используется.
 
 ## Скрипты
 
@@ -122,4 +148,6 @@ assyl.tech {
 | `npm run dev` | dev-сервер |
 | `npm run build` / `npm start` | production-сборка и запуск |
 | `npm run lint` | ESLint |
+| `npm run preview` | production-сборка и запуск (реальная скорость) |
+| `npm run db:migrate` | применить миграции к базе из `DATABASE_URL` |
 | `npx drizzle-kit generate` | создать миграцию после изменения `src/lib/db/schema.ts` |
