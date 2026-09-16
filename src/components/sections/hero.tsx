@@ -137,14 +137,16 @@ export function Hero() {
       {/* content */}
       <div data-content className="container-x relative flex h-full flex-col justify-end pb-[clamp(28px,6vh,72px)]">
         <div className="grid items-end gap-10 lg:grid-cols-12">
-          <div className="lg:col-span-8">
+          {/* container query: the headline is sized from THIS column, not the viewport —
+              each line is clipped by its own overflow-hidden wrapper (reveal animation). */}
+          <div className="[container-type:inline-size] lg:col-span-9">
             <p data-fade className="mono-label mb-6 flex items-center gap-3 md:hidden">
               <span className="text-signal">[00]</span> {t("eyebrow")}
             </p>
             <h1
               className="font-display font-medium leading-[0.92] tracking-[-0.035em]"
-              // Unbounded is wide: cap the size so the longest line (e.g. Kazakh) always fits the viewport
-              style={{ fontSize: `min(124px, calc((100vw - 48px) / ${longest * 0.8}), max(40px, 7.4vw))` }}
+              // 0.8em per glyph is the safe upper bound measured for Unbounded (widest: Kazakh ≈ 0.78)
+              style={{ fontSize: `min(124px, calc(100cqw / ${(longest * 0.8).toFixed(2)}), max(40px, 7.4vw))` }}
             >
               {lines.map((line, i) => (
                 <span key={i} className="block overflow-hidden pb-[0.06em]">
@@ -172,7 +174,7 @@ export function Hero() {
             </div>
           </div>
 
-          <div className="hidden flex-col items-end gap-8 lg:col-span-4 lg:flex">
+          <div className="hidden flex-col items-end gap-8 lg:col-span-3 lg:flex">
             <ul data-fade className="flex flex-col items-end gap-2">
               {tags.map((tag, i) => (
                 <li key={tag} className="mono-label flex items-center gap-3">
