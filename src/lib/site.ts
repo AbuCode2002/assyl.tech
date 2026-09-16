@@ -1,6 +1,4 @@
-/**
- * Public company info. Replace the placeholder values below with real ones.
- */
+/** Public company info. */
 export const site = {
   name: "assyl.tech",
   url: process.env.NEXT_PUBLIC_SITE_URL ?? "https://assyltech.kz",
@@ -10,7 +8,6 @@ export const site = {
   contacts: {
     email: "akopbulsynov@gmail.com",
     phone: "+7 771 032 16 38",
-    // TODO: placeholder until the Instagram account exists
     instagram: "assyl.tech",
     telegram: "Abdurrakhim02",
     whatsapp: "77710321638",
