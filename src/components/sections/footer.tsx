@@ -86,7 +86,7 @@ export function Footer() {
           <div className="flex flex-col gap-5 lg:col-span-2">
             <p className="mono-label text-mute">{t("columns.studio")}</p>
             <p className="-mt-2 text-[15px] text-fg/75">{t("city")}</p>
-            <p className="font-mono text-[11px] tracking-[0.08em] text-dim">{site.coords}</p>
+            <p dir="ltr" className="font-mono text-[11px] tracking-[0.08em] text-dim">{site.coords}</p>
             <FooterClock label={t("localTime")} />
           </div>
         </div>

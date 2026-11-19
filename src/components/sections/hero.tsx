@@ -1,7 +1,7 @@
 "use client";
 
 import dynamic from "next/dynamic";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import { useEffect, useRef, useState } from "react";
 import { useScrollTo } from "@/components/providers/smooth-scroll";
 import type { HeroSceneState } from "@/components/three/particle-logo";
@@ -11,6 +11,7 @@ import { ArrowIcon, MagneticButton } from "@/components/ui/magnetic-button";
 import { ScrambleText } from "@/components/ui/scramble-text";
 import { gsap, prefersReducedMotion, useGSAP } from "@/lib/gsap";
 import { onIntroDone } from "@/lib/intro";
+import { isRtl, type Locale } from "@/i18n/routing";
 import { site } from "@/lib/site";
 
 const ParticleLogoCanvas = dynamic(() => import("@/components/three/particle-logo"), { ssr: false });
@@ -34,7 +35,10 @@ export function Hero() {
   const scrollTo = useScrollTo();
   const lines = t.raw("title") as string[];
   const tags = t.raw("tags") as string[];
+  const rtl = isRtl(useLocale() as Locale);
   const longest = Math.max(...lines.map((l) => l.length));
+  // measured upper bound per glyph: Unbounded ≈ 0.78em, Noto Kufi Arabic ≈ 0.62em
+  const glyph = rtl ? 0.62 : 0.8;
 
   useEffect(() => {
     // eslint-disable-next-line react-hooks/set-state-in-effect -- capability probe must run on the client
@@ -124,7 +128,7 @@ export function Hero() {
           </div>
           <div data-hud className="absolute right-[clamp(20px,4vw,56px)] top-28 hidden flex-col items-end gap-2 md:flex">
             <StatusDot>{t("status")}</StatusDot>
-            <span className="mono-label text-mute">{site.coords}</span>
+            <span dir="ltr" className="mono-label text-mute">{site.coords}</span>
           </div>
           <TickRail vertical count={32} className="absolute left-3 top-1/2 hidden h-[46vh] -translate-y-1/2 lg:flex" />
           <TickRail vertical count={32} className="absolute right-3 top-1/2 hidden h-[46vh] -translate-y-1/2 items-end lg:flex" />
@@ -146,7 +150,7 @@ export function Hero() {
             <h1
               className="font-display font-medium leading-[0.92] tracking-[-0.035em]"
               // 0.8em per glyph is the safe upper bound measured for Unbounded (widest: Kazakh ≈ 0.78)
-              style={{ fontSize: `min(124px, calc(100cqw / ${(longest * 0.8).toFixed(2)}), max(40px, 7.4vw))` }}
+              style={{ fontSize: `min(124px, calc(100cqw / ${(longest * glyph).toFixed(2)}), max(40px, 7.4vw))` }}
             >
               {lines.map((line, i) => (
                 <span key={i} className="block overflow-hidden pb-[0.06em]">

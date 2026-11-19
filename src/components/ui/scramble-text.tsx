@@ -25,7 +25,7 @@ export function ScrambleText({ text, as: Tag = "span", className, trigger = "vie
 
   const run = useCallback(() => {
     cancelAnimationFrame(frame.current);
-    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+    if (document.dir === "rtl" || window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
       setOutput(text);
       return;
     }

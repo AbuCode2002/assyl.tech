@@ -34,7 +34,7 @@ export function ContactChannels({ className }: { className?: string }) {
           <li key={c.id} className="group/ch relative flex items-center gap-3 border-b border-line">
             <span
               aria-hidden
-              className="absolute -bottom-px left-0 h-px w-full origin-left scale-x-0 bg-linear-to-r from-signal via-ion to-transparent transition-transform duration-700 ease-out-expo group-focus-within/ch:scale-x-100 group-hover/ch:scale-x-100"
+              className="absolute -bottom-px start-0 h-px w-full origin-left scale-x-0 bg-linear-to-r from-signal via-ion to-transparent transition-transform duration-700 ease-out-expo group-focus-within/ch:scale-x-100 group-hover/ch:scale-x-100"
             />
             <a
               href={c.href}
@@ -46,7 +46,10 @@ export function ContactChannels({ className }: { className?: string }) {
               <span className="mono-label w-24 shrink-0 transition-colors duration-500 group-hover/ch:text-signal">
                 {t(`channels.${c.id}`)}
               </span>
-              <span className="min-w-0 truncate font-display text-[clamp(16px,1.5vw,22px)] font-medium tracking-[-0.02em] text-fg transition-[translate] duration-500 ease-out-expo group-hover/ch:translate-x-2">
+              <span
+                dir="ltr"
+                className="min-w-0 truncate font-display text-[clamp(16px,1.5vw,22px)] font-medium tracking-[-0.02em] text-fg transition-[translate] duration-500 ease-out-expo group-hover/ch:translate-x-2 rtl:text-end rtl:group-hover/ch:-translate-x-2"
+              >
                 {c.value}
               </span>
               {c.external && <span className="sr-only"> ({t("newTab")})</span>}
@@ -139,16 +142,16 @@ export function ContactTelemetry({ className }: { className?: string }) {
   const { time, offset } = useAlmatyClock();
   return (
     <dl className={cn("grid grid-cols-2 border border-line bg-carbon/40", className)}>
-      <div className="relative border-r border-line p-4 sm:p-5">
+      <div className="relative border-e border-line p-4 sm:p-5">
         <dt className="mono-label">{t("localTime")}</dt>
-        <dd className="mt-3 flex flex-wrap items-baseline gap-x-2">
+        <dd dir="ltr" className="mt-3 flex flex-wrap items-baseline gap-x-2">
           <span className="font-mono text-[clamp(18px,1.7vw,24px)] tabular-nums text-fg">{time}</span>
           <span className="font-mono text-[10px] tracking-[0.1em] text-mute">{offset}</span>
         </dd>
       </div>
       <div className="p-4 sm:p-5">
         <dt className="mono-label">{t("coords")}</dt>
-        <dd className="mt-3 font-mono text-[12px] leading-relaxed tracking-[0.06em] text-fg">{site.coords}</dd>
+        <dd dir="ltr" className="mt-3 font-mono text-[12px] leading-relaxed tracking-[0.06em] text-fg">{site.coords}</dd>
       </div>
     </dl>
   );

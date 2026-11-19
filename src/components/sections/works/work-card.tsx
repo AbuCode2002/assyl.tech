@@ -262,7 +262,7 @@ export function WorkCard({ item, index, total, speed, className, onOpen }: Props
                 onFocus={() => setScramble((n) => n + 1)}
                 aria-haspopup="dialog"
                 aria-label={t("openCase", { title: item.title })}
-                className="text-left outline-none"
+                className="text-start outline-none"
               >
                 <ScrambleOverlay text={item.title} play={scramble} />
               </button>

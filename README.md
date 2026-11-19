@@ -1,6 +1,6 @@
 # assyl.tech — сайт студии + админка
 
-Next.js 16 · React 19 · TypeScript · Tailwind CSS 4 · Three.js / React Three Fiber · GSAP + Lenis · next-intl (RU / KZ / EN) · Drizzle ORM + PostgreSQL
+Next.js 16 · React 19 · TypeScript · Tailwind CSS 4 · Three.js / React Three Fiber · GSAP + Lenis · next-intl (RU / KZ / EN / AR) · Drizzle ORM + PostgreSQL
 
 ## Быстрый старт (локально)
 
@@ -9,7 +9,7 @@ npm install
 npm run dev
 ```
 
-- Сайт: http://localhost:3000 (казахский — `/kz`, английский — `/en`)
+- Сайт: http://localhost:3000 (казахский — `/kz`, английский — `/en`, арабский — `/ar`)
 - Админка: http://localhost:3000/admin
 
 Docker для разработки **не нужен**: если `DATABASE_URL` не задан, поднимается встроенный PostgreSQL (PGlite)
@@ -59,7 +59,7 @@ git push
 |---|---|
 | Контакты (Instagram, Telegram, WhatsApp, email, телефон) | `src/lib/site.ts` |
 | Портфолио (работы, тексты, видео) | `src/content/projects.ts` + файлы в `public/media/` |
-| Тексты сайта на 3 языках | `src/messages/{ru,kz,en}/*.json` |
+| Тексты сайта на 4 языках | `src/messages/{ru,kz,en,ar}/*.json` |
 | Дизайн-токены (цвета, шрифты, эффекты) | `src/app/globals.css`, описание — `docs/DESIGN.md` |
 | 3D-сцена со смартфоном и ноутбуком | `src/components/three/showcase-scene.tsx` |
 | Частицы-логотип на первом экране | `src/components/three/particle-logo.tsx` |

@@ -61,6 +61,8 @@ export function ProcessScroller() {
             if (!frame || !viewport || !track) return;
             gsap.set(viewport, { overflowX: "hidden" });
             const distance = () => Math.max(0, track.scrollWidth - viewport.clientWidth);
+            // RTL lays the track out from the right, so it has to travel the opposite way.
+            const dir = getComputedStyle(frame).direction === "rtl" ? -1 : 1;
 
             const tl = gsap.timeline({
               defaults: { ease: "none", duration: 1 },
@@ -75,18 +77,18 @@ export function ProcessScroller() {
                 onUpdate: (self) => setIndex(Math.min(n - 1, Math.round(self.progress * (n - 1)))),
               },
             });
-            tl.fromTo(track, { x: 0 }, { x: () => -distance() }, 0)
+            tl.fromTo(track, { x: 0 }, { x: () => -distance() * dir }, 0)
               .fromTo("[data-beam-fill]", { scaleX: 0 }, { scaleX: 1 }, 0)
-              .fromTo("[data-beam-head]", { xPercent: 0 }, { xPercent: 100 }, 0);
+              .fromTo("[data-beam-head]", { xPercent: 0 }, { xPercent: 100 * dir }, 0);
 
             panels.forEach((panel) => {
               const num = panel.querySelector("[data-num]");
               if (!num) return;
               gsap.fromTo(
                 num,
-                { xPercent: 16 },
+                { xPercent: 16 * dir },
                 {
-                  xPercent: -16,
+                  xPercent: -16 * dir,
                   ease: "none",
                   scrollTrigger: { trigger: panel, containerAnimation: tl, start: "left right", end: "right left", scrub: true },
                 },
@@ -140,7 +142,7 @@ export function ProcessScroller() {
                 className="mt-6 font-display text-[clamp(36px,5vw,88px)] font-medium leading-[0.95] tracking-[-0.03em] md:mt-8"
               />
             </div>
-            <div className="flex max-w-[400px] flex-col gap-5 md:items-end md:text-right">
+            <div className="flex max-w-[400px] flex-col gap-5 md:items-end md:text-end">
               <p className="text-[clamp(15px,1.15vw,17px)] leading-relaxed text-dim">{t("intro")}</p>
               <div aria-hidden className="hidden items-center gap-3 font-mono text-[12px] uppercase tracking-[0.16em] text-dim md:flex">
                 <span>{t("step")}</span>

@@ -397,7 +397,7 @@ export function CaseModal({ items, index, onNavigate, onClose }: Props) {
                 onClick={() => go(1)}
                 data-track-click="work-next-title"
                 aria-label={t("modal.nextAria", { title: items[nextIndex]!.title })}
-                className="group/next mt-[clamp(56px,8vw,120px)] block w-full border-t border-line pt-8 text-left"
+                className="group/next mt-[clamp(56px,8vw,120px)] block w-full border-t border-line pt-8 text-start"
               >
                 <span className="mono-label flex items-center gap-3">
                   <span className="text-signal">{pad2(nextIndex + 1)}</span>

@@ -29,7 +29,7 @@ export function FooterCta() {
             className="mt-8 font-display text-[clamp(40px,6.8vw,124px)] font-medium leading-[0.92] tracking-[-0.045em]"
           />
         </div>
-        <div className="flex flex-col items-start gap-8 lg:col-span-4 lg:items-end lg:text-right">
+        <div className="flex flex-col items-start gap-8 lg:col-span-4 lg:items-end lg:text-end">
           <p className="max-w-[36ch] text-[clamp(15px,1.2vw,18px)] leading-relaxed text-dim">{t("text")}</p>
           <MagneticButton
             href="#contact"
@@ -54,7 +54,7 @@ export function FooterClock({ label }: { label: string }) {
   return (
     <p className="flex flex-col gap-1">
       <span className="mono-label text-mute">{label}</span>
-      <span className="font-mono text-[15px] tabular-nums text-fg">
+      <span dir="ltr" className="font-mono text-[15px] tabular-nums text-fg">
         {time} <span className="text-[10px] tracking-[0.1em] text-mute">{offset}</span>
       </span>
     </p>

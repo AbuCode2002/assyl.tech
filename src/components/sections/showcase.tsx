@@ -233,7 +233,7 @@ export function Showcase() {
         </div>
 
         {/* chapter rail */}
-        <nav aria-label={t("eyebrow")} className="absolute right-[clamp(12px,2vw,28px)] top-1/2 z-10 flex -translate-y-1/2 flex-col items-end gap-5">
+        <nav aria-label={t("eyebrow")} className="absolute end-[clamp(12px,2vw,28px)] top-1/2 z-10 flex -translate-y-1/2 flex-col items-end gap-5">
           {items.map((item, i) => (
             <button
               key={item.id}

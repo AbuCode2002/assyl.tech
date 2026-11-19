@@ -13,7 +13,7 @@ const fieldOk = "border-line hover:border-line-strong focus:border-ion/60";
 const fieldBad = "border-danger/60 hover:border-danger/80 focus:border-danger/80";
 
 const labelBase =
-  "pointer-events-none absolute left-4 origin-left whitespace-nowrap text-[15px] leading-[1.4] transition-[translate,scale,color] duration-300 ease-out-expo peer-focus:text-ion";
+  "pointer-events-none absolute start-4 origin-left rtl:origin-right whitespace-nowrap text-[15px] leading-[1.4] transition-[translate,scale,color] duration-300 ease-out-expo peer-focus:text-ion";
 const labelFloat = "-translate-y-[11px] scale-[0.76] text-dim";
 const labelRest =
   "text-dim peer-focus:-translate-y-[11px] peer-focus:scale-[0.76] peer-autofill:-translate-y-[11px] peer-autofill:scale-[0.76]";
@@ -100,7 +100,7 @@ export function TextField({
           <span
             id={hintId}
             className={cn(
-              "pointer-events-none absolute right-4 top-[21px] font-mono text-[11px] text-mute transition-opacity duration-300",
+              "pointer-events-none absolute end-4 top-[21px] font-mono text-[11px] text-mute transition-opacity duration-300",
               filled ? "opacity-0" : "opacity-0 group-focus-within/field:opacity-100",
             )}
           >
@@ -110,7 +110,7 @@ export function TextField({
         {optionalLabel && !filled && (
           <span
             aria-hidden
-            className="pointer-events-none absolute right-4 top-[23px] font-mono text-[10px] uppercase tracking-[0.12em] text-mute transition-opacity duration-300 group-focus-within/field:opacity-0"
+            className="pointer-events-none absolute end-4 top-[23px] font-mono text-[10px] uppercase tracking-[0.12em] text-mute transition-opacity duration-300 group-focus-within/field:opacity-0"
           >
             {optionalLabel}
           </span>
@@ -185,7 +185,7 @@ export function TextAreaField({
           <span
             id={hintId}
             className={cn(
-              "pointer-events-none absolute left-4 right-4 top-[46px] text-[14px] text-mute transition-opacity duration-300",
+              "pointer-events-none absolute inset-x-4 top-[46px] text-[14px] text-mute transition-opacity duration-300",
               filled ? "opacity-0" : "opacity-0 group-focus-within/field:opacity-100",
             )}
           >
@@ -195,7 +195,7 @@ export function TextAreaField({
         <span
           id={counterId}
           className={cn(
-            "pointer-events-none absolute bottom-3 right-4 font-mono text-[10px] tabular-nums tracking-[0.08em] transition-colors",
+            "pointer-events-none absolute bottom-3 end-4 font-mono text-[10px] tabular-nums tracking-[0.08em] transition-colors",
             near ? "text-warn" : "text-mute",
           )}
         >

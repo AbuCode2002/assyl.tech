@@ -89,7 +89,7 @@ function ServiceRow({
           onClick={onToggle}
           data-row-inner
           data-track-click={`service-${id}`}
-          className="group/row relative flex w-full items-center gap-4 overflow-hidden py-[clamp(22px,2.8vw,40px)] text-left outline-none sm:gap-6 md:gap-8 focus-visible:[&_[data-name]]:text-ion"
+          className="group/row relative flex w-full items-center gap-4 overflow-hidden py-[clamp(22px,2.8vw,40px)] text-start outline-none sm:gap-6 md:gap-8 focus-visible:[&_[data-name]]:text-ion"
         >
           {/* fill sweep */}
           <span

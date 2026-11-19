@@ -82,7 +82,7 @@ function Terminal({ lines }: { lines: string[] }) {
         </div>
         <span className="mono-label text-mute">~/assyl — zsh</span>
       </div>
-      <pre className="min-h-[220px] whitespace-pre-wrap px-5 py-5 font-mono text-[13px] leading-7 text-dim">
+      <pre dir="ltr" className="min-h-[220px] whitespace-pre-wrap px-5 py-5 text-start font-mono text-[13px] leading-7 text-dim">
         {typed.map((l, i) => (
           <div key={i} className={i === 0 ? "text-fg" : l.startsWith("→") ? "text-ion" : ""}>
             {i === 0 && <span className="text-signal">$ </span>}

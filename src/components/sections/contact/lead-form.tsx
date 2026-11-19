@@ -323,7 +323,7 @@ export function LeadForm() {
           ))}
         </div>
         <span aria-hidden className={cn("absolute inset-x-0 -bottom-px h-px overflow-hidden", sending ? "opacity-100" : "opacity-0")}>
-          <span data-scan-bar className="absolute inset-y-0 left-0 w-1/4 bg-linear-to-r from-transparent via-ion to-transparent" />
+          <span data-scan-bar className="absolute inset-y-0 start-0 w-1/4 bg-linear-to-r from-transparent via-ion to-transparent" />
         </span>
       </div>
 

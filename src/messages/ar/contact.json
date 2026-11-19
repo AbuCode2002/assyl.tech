@@ -1,0 +1,92 @@
+{
+  "eyebrow": "التواصل",
+  "title": "حدّثونا [عن مشروعكم]",
+  "subtitle": "نرد خلال يوم عمل واحد.",
+  "status": "نستقبل مشاريع جديدة",
+  "channelsLabel": "قنوات التواصل",
+  "channels": {
+    "instagram": "Instagram",
+    "telegram": "Telegram",
+    "whatsapp": "WhatsApp",
+    "email": "Email",
+    "phone": "الهاتف"
+  },
+  "newTab": "يُفتح في تبويب جديد",
+  "copy": "نسخ",
+  "copyAria": "نسخ: {value}",
+  "copied": "تم النسخ",
+  "localTime": "التوقيت في ألماتي",
+  "coords": "الإحداثيات",
+  "form": {
+    "header": "NEW_REQUEST.form",
+    "headerSending": "TRANSMITTING…",
+    "headerSent": "REQUEST_ACCEPTED.log",
+    "required": "مطلوب",
+    "optional": "اختياري",
+    "groups": {
+      "contact": "بيانات التواصل",
+      "services": "ما تحتاجونه",
+      "budget": "الميزانية",
+      "timeline": "المدة الزمنية",
+      "message": "عن المشروع"
+    },
+    "fields": {
+      "name": "الاسم",
+      "phone": "الهاتف / WhatsApp",
+      "telegram": "Telegram",
+      "email": "Email",
+      "company": "الشركة",
+      "message": "الرسالة"
+    },
+    "hints": {
+      "telegram": "@username",
+      "message": "باختصار: المهمة، الهدف، وما هو جاهز لديكم"
+    },
+    "contactHint": "اذكروا وسيلة تواصل واحدة على الأقل: الهاتف أو Telegram أو email",
+    "servicesHint": "يمكنكم اختيار أكثر من خيار",
+    "budget": {
+      "lt1m": "حتى 1 مليون ₸",
+      "1to3m": "1–3 مليون ₸",
+      "3to7m": "3–7 مليون ₸",
+      "gt7m": "7+ مليون ₸",
+      "unknown": "لا أعرف بعد"
+    },
+    "timeline": {
+      "asap": "عاجل",
+      "1to3": "1–3 أشهر",
+      "3to6": "3–6 أشهر",
+      "flex": "مرن"
+    },
+    "consent": "أوافق على معالجة بياناتي الشخصية",
+    "submit": "إرسال الطلب",
+    "sending": "جارٍ الإرسال…",
+    "errors": {
+      "nameRequired": "كيف نخاطبكم؟",
+      "nameShort": "الاسم — حرفان على الأقل",
+      "nameLong": "الاسم — 80 حرفًا كحد أقصى",
+      "phone": "تحققوا من رقم الهاتف",
+      "email": "تحققوا من عنوان البريد",
+      "telegram": "القيمة طويلة جدًا",
+      "contact": "نحتاج وسيلة تواصل واحدة على الأقل: الهاتف أو Telegram أو email",
+      "consent": "لا يمكننا معالجة الطلب دون موافقتكم",
+      "message": "الرسالة — 3000 حرف كحد أقصى",
+      "summary": "تحققوا من الحقول المحددة",
+      "rate": "طلبات كثيرة جدًا. حاولوا لاحقًا.",
+      "network": "تعذّر الإرسال. تحققوا من الاتصال وحاولوا مرة أخرى.",
+      "server": "حدث خطأ ما. حاولوا مرة أخرى أو راسلونا مباشرة."
+    },
+    "success": {
+      "eyebrow": "تم إرسال الطلب",
+      "title": "تم استلام الطلب <accent>{number}</accent>",
+      "titleNoNumber": "تم <accent>استلام الطلب</accent>",
+      "text": "شكرًا لكم. سنراجع المهمة ونتواصل معكم خلال يوم عمل واحد.",
+      "stepsLabel": "الخطوات التالية",
+      "steps": [
+        "نراجع المهمة ونجهّز أسئلتنا",
+        "نتواصل معكم لتوضيح التفاصيل",
+        "نقترح الحل والمدة والميزانية"
+      ],
+      "again": "إرسال طلب آخر"
+    }
+  }
+}

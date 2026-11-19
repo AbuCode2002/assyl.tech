@@ -95,7 +95,7 @@ export function RevealText({ text, as: Tag = "p", className, by = "words", stagg
           </span>
         ) : (
           <span key={i} aria-hidden className="inline-block overflow-hidden pb-[0.08em] align-bottom">
-            <span data-piece className="inline-block origin-bottom-left">
+            <span data-piece className="inline-block origin-bottom-left rtl:origin-bottom-right">
               {tok === " " ? " " : tok}
             </span>
           </span>

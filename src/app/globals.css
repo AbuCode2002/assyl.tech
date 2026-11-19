@@ -101,6 +101,28 @@
   padding-inline: clamp(20px, 4vw, 56px);
 }
 
+/* ───────────────────────── Arabic / RTL ─────────────────────────
+   Unbounded, Manrope and JetBrains Mono carry no Arabic glyphs, so the whole
+   type system swaps to Arabic faces when the page direction is RTL.
+   Letter-spacing is reset too: tracking pulls joined Arabic letters apart. */
+[dir="rtl"] {
+  --font-display: var(--font-kufi-arabic), "Noto Kufi Arabic", system-ui, sans-serif;
+  --font-sans: var(--font-plex-arabic), "IBM Plex Sans Arabic", system-ui, sans-serif;
+  --font-mono: var(--font-plex-arabic), "IBM Plex Sans Arabic", ui-monospace, monospace;
+}
+
+[dir="rtl"] .mono-label,
+[dir="rtl"] [class*="tracking-"] {
+  letter-spacing: normal;
+}
+
+/* Kufi sits lower and reads smaller at the same size than Unbounded. */
+[dir="rtl"] h1,
+[dir="rtl"] h2,
+[dir="rtl"] h3 {
+  line-height: 1.25;
+}
+
 /* ───────────────────────── base ───────────────────────── */
 @layer base {
   html {

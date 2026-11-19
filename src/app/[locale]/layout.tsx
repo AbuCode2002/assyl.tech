@@ -1,9 +1,9 @@
 import type { Metadata, Viewport } from "next";
-import { JetBrains_Mono, Manrope, Noto_Sans_Mono, Unbounded } from "next/font/google";
+import { IBM_Plex_Sans_Arabic, JetBrains_Mono, Manrope, Noto_Kufi_Arabic, Noto_Sans_Mono, Unbounded } from "next/font/google";
 import { notFound } from "next/navigation";
 import { hasLocale, NextIntlClientProvider } from "next-intl";
 import { getTranslations, setRequestLocale } from "next-intl/server";
-import { htmlLang, routing, type Locale } from "@/i18n/routing";
+import { htmlDir, htmlLang, routing, type Locale } from "@/i18n/routing";
 import { contactLinks, site } from "@/lib/site";
 import { Analytics } from "@/components/providers/analytics";
 import { SmoothScroll } from "@/components/providers/smooth-scroll";
@@ -35,6 +35,23 @@ const jetbrains = JetBrains_Mono({
   fallback: ["Noto Sans Mono", "ui-monospace", "monospace"],
 });
 
+// Arabic faces: preload off so Latin pages never fetch them. globals.css swaps the font tokens
+// under [dir="rtl"] — Unbounded and Manrope have no Arabic glyphs at all.
+const kufiArabic = Noto_Kufi_Arabic({
+  subsets: ["arabic"],
+  weight: ["400", "500", "600"],
+  variable: "--font-kufi-arabic",
+  display: "swap",
+  preload: false,
+});
+const plexArabic = IBM_Plex_Sans_Arabic({
+  subsets: ["arabic"],
+  weight: ["400", "500"],
+  variable: "--font-plex-arabic",
+  display: "swap",
+  preload: false,
+});
+
 export function generateStaticParams() {
   return routing.locales.map((locale) => ({ locale }));
 }
@@ -54,7 +71,7 @@ export async function generateMetadata({ params }: LayoutProps<"/[locale]">): Pr
     description: t("description"),
     alternates: {
       canonical: path,
-      languages: { ru: "/", kk: "/kz", en: "/en", "x-default": "/" },
+      languages: { ru: "/", kk: "/kz", en: "/en", ar: "/ar", "x-default": "/" },
     },
     openGraph: {
       type: "website",
@@ -85,7 +102,7 @@ function organizationJsonLd(locale: Locale, description: string, services: strin
     address: { "@type": "PostalAddress", addressLocality: site.city[locale], addressCountry: "KZ" },
     areaServed: "KZ",
     sameAs: [contactLinks.instagram, contactLinks.telegram],
-    knowsLanguage: ["ru", "kk", "en"],
+    knowsLanguage: ["ru", "kk", "en", "ar"],
     makesOffer: services.map((name) => ({ "@type": "Offer", itemOffered: { "@type": "Service", name } })),
   };
 }
@@ -100,7 +117,12 @@ export default async function LocaleLayout({ children, params }: LayoutProps<"/[
   const jsonLd = organizationJsonLd(locale, t("meta.description"), services);
 
   return (
-    <html lang={htmlLang[locale]} className={`${unbounded.variable} ${manrope.variable} ${jetbrains.variable} ${notoMono.variable}`} suppressHydrationWarning>
+    <html
+      lang={htmlLang[locale]}
+      dir={htmlDir[locale]}
+      className={`${unbounded.variable} ${manrope.variable} ${jetbrains.variable} ${notoMono.variable} ${kufiArabic.variable} ${plexArabic.variable}`}
+      suppressHydrationWarning
+    >
       <body className="min-h-dvh overflow-x-clip">
         <NextIntlClientProvider>
           <SmoothScroll>{children}</SmoothScroll>

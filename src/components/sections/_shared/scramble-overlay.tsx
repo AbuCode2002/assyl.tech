@@ -24,7 +24,7 @@ export function ScrambleOverlay({
   const [frame, setFrame] = useState<string | null>(null);
 
   useEffect(() => {
-    if (!play || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    if (!play || document.dir === "rtl" || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
     const chars = Array.from(text);
     const start = performance.now();
     let raf = 0;

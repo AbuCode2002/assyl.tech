@@ -74,10 +74,19 @@ Tailwind classes: `bg-void`, `text-dim`, `border-line`, `bg-signal`, `text-ion`,
 
 ## i18n
 
-next-intl, locales `ru` (default, no prefix), `kz` (`/kz`, html lang `kk`), `en` (`/en`).
+next-intl, locales `ru` (default, no prefix), `kz` (`/kz`, html lang `kk`), `en` (`/en`), `ar` (`/ar`, RTL).
 Messages are split per section: `src/messages/<locale>/<namespace>.json`; namespaces are listed
 in `src/i18n/request.ts`. Client components: `useTranslations("services")`; server: `getTranslations`.
-Use `t.raw()` for arrays/objects. `useLocale()` returns `"ru" | "kz" | "en"`.
+Use `t.raw()` for arrays/objects. `useLocale()` returns `"ru" | "kz" | "en" | "ar"`.
+
+### Right-to-left (Arabic)
+
+`<html dir>` comes from `htmlDir` in `src/i18n/routing.ts`; `isRtl(locale)` is the helper for components.
+Under `[dir="rtl"]` `globals.css` swaps `--font-display` / `--font-sans` / `--font-mono` to Noto Kufi Arabic
+and IBM Plex Sans Arabic (the Latin faces have no Arabic glyphs) and resets letter-spacing, which otherwise
+pulls joined Arabic letters apart. Prefer logical utilities — `start-*`, `end-*`, `ms-*`, `ps-*`, `text-start`,
+`text-end` — over `left-*`/`right-*`; flex and grid flow flips on its own, absolute positioning does not.
+Horizontal GSAP motion needs a direction multiplier (see `process-scroller.tsx`), and so does the marquee.
 
 ## Analytics hooks
 

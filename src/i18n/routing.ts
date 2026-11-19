@@ -1,7 +1,7 @@
 import { defineRouting } from "next-intl/routing";
 
 export const routing = defineRouting({
-  locales: ["ru", "kz", "en"],
+  locales: ["ru", "kz", "en", "ar"],
   defaultLocale: "ru",
   localePrefix: "as-needed",
   // "/" is always Russian (main market); visitors switch language explicitly.
@@ -11,4 +11,9 @@ export const routing = defineRouting({
 export type Locale = (typeof routing.locales)[number];
 
 /** BCP-47 tag for <html lang> — the URL uses "kz", the language code is "kk". */
-export const htmlLang: Record<Locale, string> = { ru: "ru", kz: "kk", en: "en" };
+export const htmlLang: Record<Locale, string> = { ru: "ru", kz: "kk", en: "en", ar: "ar" };
+
+/** Arabic is written right to left; everything else left to right. */
+export const htmlDir: Record<Locale, "ltr" | "rtl"> = { ru: "ltr", kz: "ltr", en: "ltr", ar: "rtl" };
+
+export const isRtl = (locale: Locale) => htmlDir[locale] === "rtl";

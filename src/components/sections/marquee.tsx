@@ -1,16 +1,17 @@
 "use client";
 
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import { useRef } from "react";
+import { isRtl, type Locale } from "@/i18n/routing";
 import { cn } from "@/lib/cn";
 import { gsap, prefersReducedMotion, ScrollTrigger, useGSAP } from "@/lib/gsap";
 
-function Row({ items, reverse, big }: { items: string[]; reverse?: boolean; big?: boolean }) {
+function Row({ items, reverse, big, rtl }: { items: string[]; reverse?: boolean; big?: boolean; rtl: boolean }) {
   const doubled = [...items, ...items];
   return (
     <div className="flex overflow-hidden">
       <div
-        className={cn("flex w-max shrink-0 animate-marquee items-center", reverse && "[animation-direction:reverse]")}
+        className={cn("flex w-max shrink-0 animate-marquee items-center", reverse !== rtl && "[animation-direction:reverse]")}
         style={{ ["--marquee-duration" as string]: big ? "60s" : "45s" }}
       >
         {doubled.map((item, i) => (
@@ -37,6 +38,7 @@ function Row({ items, reverse, big }: { items: string[]; reverse?: boolean; big?
 
 export function Marquee() {
   const t = useTranslations("about");
+  const rtl = isRtl(useLocale() as Locale);
   const root = useRef<HTMLDivElement>(null);
   const big = t.raw("marquee") as string[];
   const small = t.raw("marqueeSmall") as string[];
@@ -58,10 +60,10 @@ export function Marquee() {
   return (
     <div ref={root} className="relative flex flex-col gap-6 overflow-hidden border-y border-line bg-ink py-10" aria-label={big.join(", ")}>
       <div data-skew>
-        <Row items={big} big />
+        <Row items={big} big rtl={rtl} />
       </div>
       <div data-skew>
-        <Row items={small} reverse />
+        <Row items={small} reverse rtl={rtl} />
       </div>
       <div aria-hidden className="pointer-events-none absolute inset-y-0 left-0 w-[12vw] bg-gradient-to-r from-ink to-transparent" />
       <div aria-hidden className="pointer-events-none absolute inset-y-0 right-0 w-[12vw] bg-gradient-to-l from-ink to-transparent" />
